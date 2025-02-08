@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Entity;
+
 use App\Domain\Enum\UserRole;
 use DateTimeImmutable;
 
@@ -15,5 +17,6 @@ class User extends Person
         public string $email,
         public string $username,
         public UserRole $role,
-    ) {}
+    ) {
+    }
 }

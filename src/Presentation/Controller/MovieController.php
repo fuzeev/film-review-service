@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Presentation\Controller;
 
 use App\Application\Dto\GetMovieByIdRequest;
@@ -17,7 +19,8 @@ class MovieController extends AbstractController
     public function __construct(
         protected GetMovieByIdUsecase $getMovieByIdUsecase,
         protected ValidatorInterface $validator,
-    ) {}
+    ) {
+    }
 
     #[Route('/movie/{id}', name: 'get_movie_by_id', methods: ['GET'])]
     public function getByIdHandler(int $id): Response
@@ -31,7 +34,7 @@ class MovieController extends AbstractController
 
         $result = $this->getMovieByIdUsecase->execute($requestDto);
 
-        if (!$result->movie) {
+        if (! $result->movie) {
             throw new NotFoundHttpException();
         }
 
@@ -40,7 +43,8 @@ class MovieController extends AbstractController
 
     protected function movieAsArray(Movie $movie): array
     {
-        $actors = array_map(fn(Actor $actor) => $actor->getShortName(), $movie->actors);
+        $actors = array_map(fn (Actor $actor) => $actor->getShortName(), $movie->actors);
+
         return [
             'id' => $movie->id,
             'title' => $movie->title,
@@ -51,5 +55,4 @@ class MovieController extends AbstractController
             'actors' => $actors,
         ];
     }
-
 }

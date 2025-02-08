@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Entity;
@@ -16,5 +17,6 @@ class Friendship
         public DateTimeImmutable $requestCreatedAt,
         public ?DateTimeImmutable $startedAt,
         public ?DateTimeImmutable $endedAt,
-    ) {}
+    ) {
+    }
 }

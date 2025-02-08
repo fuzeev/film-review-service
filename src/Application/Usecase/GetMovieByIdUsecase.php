@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace App\Application\Usecase;
 
@@ -11,7 +12,8 @@ class GetMovieByIdUsecase
 {
     public function __construct(
         protected IMovieRepository $movieRepository
-    ) {}
+    ) {
+    }
 
     public function execute(GetMovieByIdRequest $request): GetMovieByIdResponse
     {

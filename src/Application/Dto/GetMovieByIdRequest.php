@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Application\Dto;
+
 use Symfony\Component\Validator\Constraints as Assert;
 
 readonly class GetMovieByIdRequest
@@ -10,5 +12,6 @@ readonly class GetMovieByIdRequest
         #[Assert\NotBlank]
         #[Assert\GreaterThan(0)]
         public int $movieId,
-    ) {}
+    ) {
+    }
 }

@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Entity;
+
 use App\Domain\Enum\MovieSource;
 
 class Movie
@@ -18,5 +20,6 @@ class Movie
         public Director $director,
         public array $actors, //Actors[]
         public float $rating,
-    ) {}
+    ) {
+    }
 }

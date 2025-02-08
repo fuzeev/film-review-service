@@ -77,6 +77,7 @@ return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->rule(UnaryOperatorSpacesFixer::class);
     $ecsConfig->rule(NoUnusedImportsFixer::class);
     $ecsConfig->rule(SingleQuoteFixer::class);
+    $ecsConfig->rule(\PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer::class);
 
     // Правила с конфигурацией
     $ecsConfig->ruleWithConfiguration(OrderedImportsFixer::class, [
