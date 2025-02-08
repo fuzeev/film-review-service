@@ -1,5 +1,8 @@
-stan:
+ecs:
 	vendor/bin/ecs check src
 
-stan-fix:
+stan:
+	vendor/bin/phpstan analyse src
+
+ecs-fix:
 	vendor/bin/ecs check src --fix
