@@ -29,9 +29,9 @@ class Movie
         public string $nameLocalized,
         public string $nameOriginal,
         public int $year,
-        public array $genres, //Genres[]
+        public array $genres,
         public Director $director,
-        public array $actors, //Actors[]
+        public array $actors,
         public float $rating,
     ) {
     }
