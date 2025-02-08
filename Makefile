@@ -12,3 +12,5 @@ psalm:
 
 psalm-info:
 	vendor/bin/psalm --show-info=true
+
+test: ecs stan psalm
