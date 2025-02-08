@@ -1,11 +1,11 @@
 ecs:
-	vendor/bin/ecs check src
+	vendor/bin/ecs check
 
 stan:
-	vendor/bin/phpstan analyse src
+	vendor/bin/phpstan analyse
 
 ecs-fix:
-	vendor/bin/ecs check src --fix
+	vendor/bin/ecs check --fix
 
 psalm:
 	vendor/bin/psalm
