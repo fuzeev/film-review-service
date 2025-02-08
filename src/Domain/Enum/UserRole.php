@@ -2,8 +2,8 @@
 
 namespace App\Domain\Enum;
 
-enum UserRole
+enum UserRole: string
 {
-    case Administrator;
-    case Reviewer;
+    case Administrator = 'admin';
+    case Reviewer = 'reviewer';
 }

@@ -7,10 +7,12 @@ use DateTimeImmutable;
 
 abstract class Person
 {
-    public string $firstName;
-    public string $lastName;
-    public ?string $middleName;
-    public DateTimeImmutable $birthday;
+    public function __construct(
+        public string $firstName,
+        public string $lastName,
+        public ?string $middleName,
+        public DateTimeImmutable $birthday,
+    ) {}
 
     public function getFullName(): string
     {
@@ -30,10 +32,5 @@ abstract class Person
         return mb_substr($this->firstName, 0, 1) . '. ' . mb_substr($this->middleName, 0, 1) . '. ' . $this->lastName;
     }
 
-    public function __construct(
-        string $firstName,
-        string $lastName,
-        ?string $middleName,
-        DateTimeImmutable $birthday,
-    ) { }
+
 }

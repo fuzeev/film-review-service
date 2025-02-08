@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 namespace App\Domain\Entity;
-readonly class Genre
+class Genre
 {
     public function __construct(
         public int $id,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Domain\Entity;
 use App\Domain\Enum\MovieSource;
 
-readonly class Movie
+class Movie
 {
     public function __construct(
         public int $id,
@@ -17,6 +17,6 @@ readonly class Movie
         public array $genres, //Genres[]
         public Director $director,
         public array $actors, //Actors[]
-        public int $rating,
+        public float $rating,
     ) {}
 }

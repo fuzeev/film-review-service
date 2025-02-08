@@ -5,7 +5,7 @@ namespace App\Domain\Entity;
 
 use App\Domain\Exception\InvalidRatingException;
 
-readonly class Review
+class Review
 {
     public function __construct(
         public int $id,
