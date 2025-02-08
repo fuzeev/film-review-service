@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/dbal": "^3",
@@ -106,6 +106,7 @@
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "7.2.*",
         "symfony/web-profiler-bundle": "7.2.*",
-        "symplify/easy-coding-standard": "^12.5"
+        "symplify/easy-coding-standard": "^12.5",
+        "vimeo/psalm": "^6.5"
     }
 }
