@@ -1,0 +1,24 @@
+# Глобальные правила для всех файлов
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# Правила для PHP-файлов
+[*.php]
+indent_size = 4
+max_line_length = 120
+
+# Правила для Markdown-файлов
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Правила для JavaScript и TypeScript
+[*.{js,ts}]
+indent_size = 2
+max_line_length = 100

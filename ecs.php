@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use PHP_CodeSniffer\Standards\Generic\Sniffs\Files\LineLengthSniff;
+use PHP_CodeSniffer\Standards\Generic\Sniffs\Metrics\CyclomaticComplexitySniff;
+use PhpCsFixer\Fixer\Alias\MbStrFunctionsFixer;
+use PhpCsFixer\Fixer\ArrayNotation\NoWhitespaceBeforeCommaInArrayFixer;
+use PhpCsFixer\Fixer\ArrayNotation\WhitespaceAfterCommaInArrayFixer;
 use PhpCsFixer\Fixer\CastNotation\LowercaseCastFixer;
 use PhpCsFixer\Fixer\CastNotation\ShortScalarCastFixer;
 use PhpCsFixer\Fixer\ClassNotation\FinalInternalClassFixer;
@@ -21,8 +26,11 @@ use PhpCsFixer\Fixer\Operator\BinaryOperatorSpacesFixer;
 use PhpCsFixer\Fixer\Operator\ConcatSpaceFixer;
 use PhpCsFixer\Fixer\Operator\TernaryOperatorSpacesFixer;
 use PhpCsFixer\Fixer\Operator\UnaryOperatorSpacesFixer;
+use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\PhpTag\BlankLineAfterOpeningTagFixer;
+use PhpCsFixer\Fixer\PhpUnit\PhpUnitMethodCasingFixer;
 use PhpCsFixer\Fixer\Semicolon\NoSinglelineWhitespaceBeforeSemicolonsFixer;
+use PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer;
 use PhpCsFixer\Fixer\StringNotation\SingleQuoteFixer;
 use PhpCsFixer\Fixer\Whitespace\BlankLineBeforeStatementFixer;
 use PhpCsFixer\Fixer\Whitespace\NoTrailingWhitespaceFixer;
@@ -51,9 +59,9 @@ return static function (ECSConfig $ecsConfig): void {
     // Отдельные правила без дополнительной конфигурации
     $ecsConfig->rule(StandaloneLineInMultilineArrayFixer::class);
     $ecsConfig->rule(BlankLineAfterStrictTypesFixer::class);
-    $ecsConfig->rule(\PhpCsFixer\Fixer\PhpUnit\PhpUnitMethodCasingFixer::class);
+    $ecsConfig->rule(PhpUnitMethodCasingFixer::class);
     $ecsConfig->rule(FinalInternalClassFixer::class);
-    $ecsConfig->rule(\PhpCsFixer\Fixer\Alias\MbStrFunctionsFixer::class);
+    $ecsConfig->rule(MbStrFunctionsFixer::class);
     $ecsConfig->rule(ClassDeclarationSniff::class);
     $ecsConfig->rule(SideEffectsSniff::class);
     $ecsConfig->rule(CamelCapsMethodNameSniff::class);
@@ -66,18 +74,18 @@ return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->rule(ReturnTypeDeclarationFixer::class);
     $ecsConfig->rule(NoTrailingWhitespaceFixer::class);
     $ecsConfig->rule(NoSinglelineWhitespaceBeforeSemicolonsFixer::class);
-    $ecsConfig->rule(\PhpCsFixer\Fixer\ArrayNotation\NoWhitespaceBeforeCommaInArrayFixer::class);
-    $ecsConfig->rule(\PhpCsFixer\Fixer\ArrayNotation\WhitespaceAfterCommaInArrayFixer::class);
+    $ecsConfig->rule(NoWhitespaceBeforeCommaInArrayFixer::class);
+    $ecsConfig->rule(WhitespaceAfterCommaInArrayFixer::class);
     $ecsConfig->rule(CombineConsecutiveIssetsFixer::class);
     $ecsConfig->rule(CombineConsecutiveUnsetsFixer::class);
     $ecsConfig->rule(PhpdocToReturnTypeFixer::class);
     $ecsConfig->rule(FullyQualifiedStrictTypesFixer::class);
-    $ecsConfig->rule(\PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer::class);
+    $ecsConfig->rule(NoSuperfluousPhpdocTagsFixer::class);
     $ecsConfig->rule(BinaryOperatorSpacesFixer::class);
     $ecsConfig->rule(UnaryOperatorSpacesFixer::class);
     $ecsConfig->rule(NoUnusedImportsFixer::class);
     $ecsConfig->rule(SingleQuoteFixer::class);
-    $ecsConfig->rule(\PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer::class);
+    $ecsConfig->rule(DeclareStrictTypesFixer::class);
 
     // Правила с конфигурацией
     $ecsConfig->ruleWithConfiguration(OrderedImportsFixer::class, [
@@ -104,6 +112,15 @@ return static function (ECSConfig $ecsConfig): void {
         'statements' => ['return'],
     ]);
 
-    // Опционально: установка директории кэша
+    $ecsConfig->ruleWithConfiguration(CyclomaticComplexitySniff::class, [
+        'complexity' => 5,
+        'absoluteComplexity' => 5,
+    ]);
+
+    $ecsConfig->ruleWithConfiguration(LineLengthSniff::class, [
+        'absoluteLineLimit' => 120,
+    ]);
+
+
     $ecsConfig->cacheDirectory(__DIR__ . '/var/cache/ecs');
 };
