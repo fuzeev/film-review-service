@@ -7,4 +7,5 @@ namespace App\Domain\Enum;
 enum MovieSource: string
 {
     case IMDB = 'imdb';
+    case MANUAL = 'manual';
 }

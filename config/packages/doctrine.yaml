@@ -21,7 +21,7 @@ doctrine:
             App:
                 type: attribute
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Infrastructure/Repository/Entity'
+                dir: '%kernel.project_dir%/src/Infrastructure/Storage'
                 prefix: 'App\Entity'
                 alias: App
         controller_resolver:
