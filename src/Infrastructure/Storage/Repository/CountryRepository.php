@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Storage\Repository;
 
-use App\Infrastructure\Converters\DoctrineConverter;
 use App\Infrastructure\Storage\Entity\Country;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,9 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CountryRepository extends ServiceEntityRepository
 {
-    protected DoctrineConverter $converter;
-
-    public function __construct(ManagerRegistry $registry, DoctrineConverter $converter)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Country::class);
     }

@@ -8,6 +8,7 @@ use App\Application\Dto\GetMovieByIdRequest;
 use App\Application\Dto\GetMovieByIdResponse;
 use App\Application\Usecase\GetMovieByIdUsecase;
 use App\Domain\Entity\Actor;
+use App\Domain\Entity\Country;
 use App\Domain\Entity\Director;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie;
@@ -24,8 +25,7 @@ class GetMovieByIdUsecaseTest extends TestCase
             MovieSource::IMDB,
             'testTitle',
             'testDescription',
-            'testName',
-            'testNameOriginal',
+            'testTitleOriginal',
             2024,
             [new Genre(1, 'Комедия'), new Genre(2, 'Драма')],
             new Director(
@@ -38,6 +38,7 @@ class GetMovieByIdUsecaseTest extends TestCase
                 new Actor('Иван', 'Иванов', 'Иванович', new \DateTimeImmutable('2000-01-01')),
                 new Actor('Анна', 'Иванова', 'Ивановна', new \DateTimeImmutable('2000-01-01')),
             ],
+            new Country(123, 'Россия'),
             8.6,
         );
     }

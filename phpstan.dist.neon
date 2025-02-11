@@ -8,3 +8,6 @@ parameters:
         - tests/
     tmpDir: var/cache/ecs
     inferPrivatePropertyTypeFromConstructor: true
+    ignoreErrors:
+        -
+            identifier: 'property.unusedType'

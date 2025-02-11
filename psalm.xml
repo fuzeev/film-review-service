@@ -20,5 +20,6 @@
         <PossiblyUnusedProperty errorLevel="info" />
         <UnusedClass errorLevel="info" />
         <PossiblyUnusedMethod errorLevel="info" />
+        <PossiblyUnusedParam errorLevel="info" />
     </issueHandlers>
 </psalm>

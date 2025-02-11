@@ -7,7 +7,7 @@ namespace App\Domain\Entity;
 class Country
 {
     public function __construct(
-        public string $id,
+        public int $id,
         public string $name,
     ) {
     }
