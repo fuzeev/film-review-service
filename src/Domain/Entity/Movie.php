@@ -22,18 +22,17 @@ use App\Domain\Enum\MovieSource;
 class Movie
 {
     public function __construct(
-        public int         $id,
+        public int $id,
         public MovieSource $source,
-        public string      $title,
-        public string      $description,
-        public string      $titleOriginal,
-        public int         $year,
-        public array       $genres,
-        public Director    $director,
-        public array       $actors,
-        public Country     $country,
-        public float       $rating,
-    )
-    {
+        public string $title,
+        public string $description,
+        public string $titleOriginal,
+        public int $year,
+        public array $genres,
+        public Director $director,
+        public array $actors,
+        public Country $country,
+        public float $rating,
+    ) {
     }
 }

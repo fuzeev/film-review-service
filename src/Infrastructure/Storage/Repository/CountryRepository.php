@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Infrastructure\Storage\Repository;
 
 use App\Infrastructure\Converters\DoctrineConverter;

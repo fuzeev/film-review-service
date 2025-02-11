@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Infrastructure\Storage\Entity;
 
 use App\Infrastructure\Storage\Repository\DirectorRepository;
@@ -102,7 +104,7 @@ class Director
 
     public function addMovie(Movie $movie): static
     {
-        if (!$this->movies->contains($movie)) {
+        if (! $this->movies->contains($movie)) {
             $this->movies->add($movie);
             $movie->setDirector($this);
         }

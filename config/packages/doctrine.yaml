@@ -22,7 +22,7 @@ doctrine:
                 type: attribute
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Infrastructure/Storage'
-                prefix: 'App\Entity'
+                prefix: 'App\Infrastructure\Storage\Entity'
                 alias: App
         controller_resolver:
             auto_mapping: false

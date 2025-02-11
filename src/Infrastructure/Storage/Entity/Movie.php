@@ -150,7 +150,7 @@ class Movie
 
     public function addGenre(Genre $genre): static
     {
-        if (!$this->genres->contains($genre)) {
+        if (! $this->genres->contains($genre)) {
             $this->genres->add($genre);
         }
 
@@ -198,7 +198,7 @@ class Movie
 
     public function addActor(Actor $actor): static
     {
-        if (!$this->actors->contains($actor)) {
+        if (! $this->actors->contains($actor)) {
             $this->actors->add($actor);
         }
 
