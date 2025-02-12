@@ -17,7 +17,7 @@ readonly class GenreConverter
 
     public function doctrineToDomain(?DoctrineGenre $genre): ?DomainGenre
     {
-        if (null === $genre) {
+        if ($genre === null) {
             return null;
         }
 
@@ -26,7 +26,7 @@ readonly class GenreConverter
 
     public function domainToDoctrine(?DomainGenre $genre): ?DoctrineGenre
     {
-        if (null === $genre) {
+        if ($genre === null) {
             return null;
         }
 

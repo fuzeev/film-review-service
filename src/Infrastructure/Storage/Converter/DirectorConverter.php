@@ -17,7 +17,7 @@ readonly class DirectorConverter
 
     public function doctrineToDomain(?DoctrineDirector $director): ?DomainDirector
     {
-        if (null === $director) {
+        if ($director === null) {
             return null;
         }
 
@@ -32,7 +32,7 @@ readonly class DirectorConverter
 
     public function domainToDoctrine(?DomainDirector $director): ?DoctrineDirector
     {
-        if (null === $director) {
+        if ($director === null) {
             return null;
         }
 

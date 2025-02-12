@@ -17,7 +17,7 @@ readonly class CountryConverter
 
     public function doctrineToDomain(?DoctrineCountry $country): ?DomainCountry
     {
-        if (null === $country) {
+        if ($country === null) {
             return null;
         }
 
@@ -26,7 +26,7 @@ readonly class CountryConverter
 
     public function domainToDoctrine(?DomainCountry $country): ?DoctrineCountry
     {
-        if (null === $country) {
+        if ($country === null) {
             return null;
         }
 

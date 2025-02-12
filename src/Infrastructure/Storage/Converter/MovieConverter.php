@@ -25,7 +25,7 @@ readonly class MovieConverter
 
     public function doctrineToDomain(?DoctrineMovie $movie): ?DomainMovie
     {
-        if (null === $movie) {
+        if ($movie === null) {
             return null;
         }
 
@@ -50,7 +50,7 @@ readonly class MovieConverter
 
     public function domainToDoctrine(?DomainMovie $movie): ?DoctrineMovie
     {
-        if (null === $movie) {
+        if ($movie === null) {
             return null;
         }
 

@@ -17,7 +17,7 @@ readonly class ActorConverter
 
     public function doctrineToDomain(?DoctrineActor $actor): ?DomainActor
     {
-        if (null === $actor) {
+        if ($actor === null) {
             return null;
         }
 
@@ -32,7 +32,7 @@ readonly class ActorConverter
 
     public function domainToDoctrine(?DomainActor $actor): ?DoctrineActor
     {
-        if (null === $actor) {
+        if ($actor === null) {
             return null;
         }
 
