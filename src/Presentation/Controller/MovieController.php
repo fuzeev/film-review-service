@@ -35,7 +35,7 @@ class MovieController extends AbstractController
         $result = $this->getMovieByIdUsecase->execute($requestDto);
 
         if (! $result->movie) {
-            throw new NotFoundHttpException();
+            return $this->json(null, 404);
         }
 
         return $this->json($this->movieAsArray($result->movie));

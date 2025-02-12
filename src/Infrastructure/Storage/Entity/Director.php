@@ -27,8 +27,8 @@ class Director
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $middle_name = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $birthday = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    private ?\DateTimeImmutable $birthday = null;
 
     /**
      * @var Collection<int, Movie>
@@ -82,12 +82,12 @@ class Director
         return $this;
     }
 
-    public function getBirthday(): ?\DateTimeInterface
+    public function getBirthday(): ?\DateTimeImmutable
     {
         return $this->birthday;
     }
 
-    public function setBirthday(\DateTimeInterface $birthday): static
+    public function setBirthday(\DateTimeImmutable $birthday): static
     {
         $this->birthday = $birthday;
 
