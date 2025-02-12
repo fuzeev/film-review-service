@@ -44,7 +44,6 @@ use Symplify\EasyCodingStandard\Config\ECSConfig;
 return static function (ECSConfig $ecsConfig): void {
     // Пути, по которым производится поиск файлов для проверки
     $ecsConfig->paths([
-        __DIR__ . '/config',
         __DIR__ . '/public',
         __DIR__ . '/src',
         __DIR__ . '/tests',

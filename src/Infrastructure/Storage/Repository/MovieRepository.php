@@ -26,11 +26,7 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
     public function getById(int $id): ?DomainMovie
     {
         /** @var ?DoctrineMovie $movie */
-        $movie = $this->createQueryBuilder('t')
-            ->andWhere('t.id = :val')
-            ->setParameter('val', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
+        $movie = $this->find($id);
 
         if ($movie === null) {
             return null;

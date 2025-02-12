@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests;
+namespace App\Tests\Unit;
 
 use App\Application\Dto\GetMovieByIdRequest;
 use App\Application\Dto\GetMovieByIdResponse;
@@ -15,10 +15,11 @@ use App\Domain\Entity\Movie;
 use App\Domain\Enum\MovieSource;
 use App\Domain\Repository\IMovieRepository;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class GetMovieByIdUsecaseTest extends TestCase
+class GetMovieByIdUsecaseTest extends KernelTestCase
 {
-    protected function createTestMovieWithId(int $id)
+    protected function givenMovieWithId(int $id)
     {
         return new Movie(
             $id,
@@ -48,7 +49,7 @@ class GetMovieByIdUsecaseTest extends TestCase
     {
         // Значение идентификатора фильма
         $movieId = 1;
-        $movie = $this->createTestMovieWithId($movieId);
+        $movie = $this->givenMovieWithId($movieId);
 
         // Создаем mock для IMovieRepository
         $movieRepositoryMock = $this->createMock(IMovieRepository::class);

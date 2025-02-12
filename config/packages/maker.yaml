@@ -1,2 +1,7 @@
+when@test:
+    maker:
+        root_namespace: 'App\Infrastructure\Storage'
+
 maker:
     root_namespace: 'App\Infrastructure\Storage'
+

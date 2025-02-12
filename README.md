@@ -7,3 +7,7 @@
 Контроллеры выполняют функцию презентаторов, usecase возвращают в них результат, 
 хотя по clean architecture ответственность за презентацию должна лежать на usecase, который обращался бы к методам
 интерфейса презентатора. Здесь это не реализовано для упрощения логики
+
+для создания тестовой базы:
+symfony console --env=test doctrine:database:create
+symfony console --env=test doctrine:schema:create
