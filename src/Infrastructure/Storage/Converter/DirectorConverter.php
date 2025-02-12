@@ -15,8 +15,12 @@ readonly class DirectorConverter
     ) {
     }
 
-    public function doctrineToDomain(DoctrineDirector $director): DomainDirector
+    public function doctrineToDomain(?DoctrineDirector $director): ?DomainDirector
     {
+        if (null === $director) {
+            return null;
+        }
+
         return new DomainDirector(
             $director->getId(),
             $director->getFirstName(),
@@ -26,8 +30,13 @@ readonly class DirectorConverter
         );
     }
 
-    public function domainToDoctrine(DomainDirector $director): DoctrineDirector
+    public function domainToDoctrine(?DomainDirector $director): ?DoctrineDirector
     {
+        if (null === $director) {
+            return null;
+        }
+
+        /** @var DoctrineDirector $entity */
         $entity = $this->entityManager->getReference(DoctrineDirector::class, $director->id);
         $entity->setFirstName($director->firstName);
         $entity->setLastName($director->lastName);

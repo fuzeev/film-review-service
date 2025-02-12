@@ -15,8 +15,12 @@ readonly class ActorConverter
     ) {
     }
 
-    public function doctrineToDomain(DoctrineActor $actor): DomainActor
+    public function doctrineToDomain(?DoctrineActor $actor): ?DomainActor
     {
+        if (null === $actor) {
+            return null;
+        }
+
         return new DomainActor(
             $actor->getId(),
             $actor->getFirstName(),
@@ -26,8 +30,13 @@ readonly class ActorConverter
         );
     }
 
-    public function domainToDoctrine(DomainActor $actor): DoctrineActor
+    public function domainToDoctrine(?DomainActor $actor): ?DoctrineActor
     {
+        if (null === $actor) {
+            return null;
+        }
+
+        /** @var DoctrineActor $entity */
         $entity = $this->entityManager->getReference(DoctrineActor::class, $actor->id);
         $entity->setFirstName($actor->firstName);
         $entity->setLastName($actor->lastName);

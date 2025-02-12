@@ -23,8 +23,12 @@ readonly class MovieConverter
     ) {
     }
 
-    public function doctrineToDomain(DoctrineMovie $movie): DomainMovie
+    public function doctrineToDomain(?DoctrineMovie $movie): ?DomainMovie
     {
+        if (null === $movie) {
+            return null;
+        }
+
         return new DomainMovie(
             $movie->getId(),
             $movie->getSource(),
@@ -44,12 +48,30 @@ readonly class MovieConverter
         );
     }
 
-    public function domainToDoctrine(DomainMovie $movie): DoctrineMovie
+    public function domainToDoctrine(?DomainMovie $movie): ?DoctrineMovie
     {
+        if (null === $movie) {
+            return null;
+        }
+
+        /** @var DoctrineMovie $entity */
         $entity = $this->entityManager->getReference(DoctrineMovie::class, $movie->id);
-        $entity->setFirstName($movie->firstName);
-        $entity->setLastName($movie->lastName);
-        $entity->setBirthday($movie->birthday);
+        $entity->setSource($movie->source);
+        $entity->setTitle($movie->title);
+        $entity->setDescription($movie->description);
+        $entity->setTitleOriginal($movie->titleOriginal);
+        $entity->setYear($movie->year);
+        array_map(
+            fn (DomainGenre $genre) => $entity->addGenre($this->genreConverter->domainToDoctrine($genre)),
+            $movie->genres
+        );
+        $entity->setDirector($this->directorConverter->domainToDoctrine($movie->director));
+        array_map(
+            fn (DomainActor $actor) => $entity->addActor($this->actorConverter->domainToDoctrine($actor)),
+            $movie->actors
+        );
+        $entity->setCountry($this->countryConverter->domainToDoctrine($movie->country));
+        $entity->setRating($movie->rating);
 
         return $entity;
     }

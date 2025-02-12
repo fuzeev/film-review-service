@@ -15,13 +15,22 @@ readonly class CountryConverter
     ) {
     }
 
-    public function doctrineToDomain(DoctrineCountry $country): DomainCountry
+    public function doctrineToDomain(?DoctrineCountry $country): ?DomainCountry
     {
+        if (null === $country) {
+            return null;
+        }
+
         return new DomainCountry($country->getId(), $country->getName());
     }
 
-    public function domainToDoctrine(DomainCountry $country): DoctrineCountry
+    public function domainToDoctrine(?DomainCountry $country): ?DoctrineCountry
     {
+        if (null === $country) {
+            return null;
+        }
+
+        /** @var DoctrineCountry $entity */
         $entity = $this->entityManager->getReference(DoctrineCountry::class, $country->id);
         $entity->setName($country->name);
 

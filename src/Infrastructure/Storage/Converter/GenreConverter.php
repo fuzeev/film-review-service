@@ -15,13 +15,22 @@ readonly class GenreConverter
     ) {
     }
 
-    public function doctrineToDomain(DoctrineGenre $genre): DomainGenre
+    public function doctrineToDomain(?DoctrineGenre $genre): ?DomainGenre
     {
+        if (null === $genre) {
+            return null;
+        }
+
         return new DomainGenre($genre->getId(), $genre->getName());
     }
 
-    public function domainToDoctrine(DomainGenre $genre): DoctrineGenre
+    public function domainToDoctrine(?DomainGenre $genre): ?DoctrineGenre
     {
+        if (null === $genre) {
+            return null;
+        }
+
+        /** @var DoctrineGenre $entity */
         $entity = $this->entityManager->getReference(DoctrineGenre::class, $genre->id);
         $entity->setName($genre->name);
 
