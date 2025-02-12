@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Infrastructure\Storage\Converter;
 
 use App\Domain\Entity\Actor as DomainActor;
@@ -9,10 +11,9 @@ use Doctrine\ORM\EntityManagerInterface;
 readonly class ActorConverter
 {
     public function __construct(
-       private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager
     ) {
-           }
-
+    }
 
     public function doctrineToDomain(DoctrineActor $actor): DomainActor
     {

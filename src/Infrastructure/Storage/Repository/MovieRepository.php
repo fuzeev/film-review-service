@@ -29,7 +29,7 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (null === $movie) {
+        if ($movie === null) {
             return null;
         }
 

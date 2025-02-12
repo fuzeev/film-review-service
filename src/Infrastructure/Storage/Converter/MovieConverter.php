@@ -1,26 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Infrastructure\Storage\Converter;
 
-use App\Domain\Entity\Movie as DomainMovie;
-use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
-use App\Domain\Entity\Genre as DomainGenre;
-use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
 use App\Domain\Entity\Actor as DomainActor;
+use App\Domain\Entity\Genre as DomainGenre;
+use App\Domain\Entity\Movie as DomainMovie;
 use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
+use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
+use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class MovieConverter
 {
     public function __construct(
-       private EntityManagerInterface $entityManager,
+        private EntityManagerInterface $entityManager,
         private ActorConverter $actorConverter,
         private DirectorConverter $directorConverter,
         private GenreConverter $genreConverter,
         private CountryConverter $countryConverter,
     ) {
-           }
-
+    }
 
     public function doctrineToDomain(DoctrineMovie $movie): DomainMovie
     {
