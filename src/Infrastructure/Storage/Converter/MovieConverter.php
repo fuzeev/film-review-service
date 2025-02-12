@@ -10,6 +10,7 @@ use App\Domain\Entity\Movie as DomainMovie;
 use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
 use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
 use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
+use App\Infrastructure\Storage\Exception\FailedToConvertException;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class MovieConverter
@@ -29,22 +30,47 @@ readonly class MovieConverter
             return null;
         }
 
+        $id = $movie->getId();
+        $source = $movie->getSource();
+        $title = $movie->getTitle();
+        $description = $movie->getDescription();
+        $titleOriginal = $movie->getTitleOriginal();
+        $year = $movie->getYear();
+        $director = $this->directorConverter->doctrineToDomain($movie->getDirector());
+        $country = $this->countryConverter->doctrineToDomain($movie->getCountry());
+        $rating = $movie->getRating();
+        $genres = $movie->getGenres();
+        $actors = $movie->getActors();
+
+        if ($id === null
+            || $source === null
+            || $title === null
+            || $description === null
+            || $titleOriginal === null
+            || $year === null
+            || $director === null
+            || $country === null
+            || $rating === null
+        ) {
+            throw new FailedToConvertException(DoctrineMovie::class, DomainMovie::class);
+        }
+
         return new DomainMovie(
-            $movie->getId(),
-            $movie->getSource(),
-            $movie->getTitle(),
-            $movie->getDescription(),
-            $movie->getTitleOriginal(),
-            $movie->getYear(),
-            $movie->getGenres()
-                ->map(fn (DoctrineGenre $genre): DomainGenre => $this->genreConverter->doctrineToDomain($genre))
+            $id,
+            $source,
+            $title,
+            $description,
+            $titleOriginal,
+            $year,
+            $genres
+                ->map(fn (DoctrineGenre $genre): ?DomainGenre => $this->genreConverter->doctrineToDomain($genre))
                 ->toArray(),
-            $this->directorConverter->doctrineToDomain($movie->getDirector()),
-            $movie->getActors()
-                ->map(fn (DoctrineActor $actor): DomainActor => $this->actorConverter->doctrineToDomain($actor))
+            $director,
+            $actors
+                ->map(fn (DoctrineActor $actor): ?DomainActor => $this->actorConverter->doctrineToDomain($actor))
                 ->toArray(),
-            $this->countryConverter->doctrineToDomain($movie->getCountry()),
-            $movie->getRating(),
+            $country,
+            $rating,
         );
     }
 
@@ -62,12 +88,24 @@ readonly class MovieConverter
         $entity->setTitleOriginal($movie->titleOriginal);
         $entity->setYear($movie->year);
         array_map(
-            fn (DomainGenre $genre) => $entity->addGenre($this->genreConverter->domainToDoctrine($genre)),
+            function (DomainGenre $genre) use ($entity) {
+                $genre = $this->genreConverter->domainToDoctrine($genre);
+                if ($genre === null) {
+                    return;
+                }
+                $entity->addGenre($genre);
+            },
             $movie->genres
         );
         $entity->setDirector($this->directorConverter->domainToDoctrine($movie->director));
         array_map(
-            fn (DomainActor $actor) => $entity->addActor($this->actorConverter->domainToDoctrine($actor)),
+            function (DomainActor $actor) use ($entity) {
+                $actor = $this->actorConverter->domainToDoctrine($actor);
+                if ($actor === null) {
+                    return;
+                }
+                $entity->addActor($actor);
+            },
             $movie->actors
         );
         $entity->setCountry($this->countryConverter->domainToDoctrine($movie->country));

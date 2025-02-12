@@ -6,6 +6,7 @@ namespace App\Infrastructure\Storage\Converter;
 
 use App\Domain\Entity\Genre as DomainGenre;
 use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
+use App\Infrastructure\Storage\Exception\FailedToConvertException;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class GenreConverter
@@ -21,7 +22,14 @@ readonly class GenreConverter
             return null;
         }
 
-        return new DomainGenre($genre->getId(), $genre->getName());
+        $id = $genre->getId();
+        $name = $genre->getName();
+
+        if ($id === null || $name === null) {
+            throw new FailedToConvertException(DoctrineGenre::class, DomainGenre::class);
+        }
+
+        return new DomainGenre($id, $name);
     }
 
     public function domainToDoctrine(?DomainGenre $genre): ?DoctrineGenre

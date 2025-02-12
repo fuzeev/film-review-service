@@ -6,16 +6,15 @@ namespace App\Domain\Entity;
 
 use DateTimeImmutable;
 
-abstract class Person
+trait PersonTrait
 {
-    public function __construct(
-        public int $id,
-        public string $firstName,
-        public string $lastName,
-        public ?string $middleName,
-        public DateTimeImmutable $birthday,
-    ) {
-    }
+    public string $firstName;
+
+    public string $lastName;
+
+    public ?string $middleName;
+
+    public DateTimeImmutable $birthday;
 
     public function getFullName(): string
     {

@@ -45,7 +45,7 @@ class MovieController extends AbstractController
     {
         $actors = array_map(fn (Actor $actor) => [
             'id' => $actor->id,
-            'name' => $actor->getShortName()
+            'name' => $actor->getShortName(),
         ], $movie->actors);
 
         $genres = array_map(fn (Genre $genre) => [

@@ -6,6 +6,7 @@ namespace App\Infrastructure\Storage\Converter;
 
 use App\Domain\Entity\Director as DomainDirector;
 use App\Infrastructure\Storage\Entity\Director as DoctrineDirector;
+use App\Infrastructure\Storage\Exception\FailedToConvertException;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class DirectorConverter
@@ -21,13 +22,17 @@ readonly class DirectorConverter
             return null;
         }
 
-        return new DomainDirector(
-            $director->getId(),
-            $director->getFirstName(),
-            $director->getLastName(),
-            $director->getMiddleName(),
-            $director->getBirthday(),
-        );
+        $id = $director->getId();
+        $firstName = $director->getFirstName();
+        $lastName = $director->getLastName();
+        $middleName = $director->getMiddleName(); // Может быть null, если это допустимо
+        $birthday = $director->getBirthday();
+
+        if ($id === null || $firstName === null || $lastName === null || $birthday === null) {
+            throw new FailedToConvertException(DoctrineDirector::class, DomainDirector::class);
+        }
+
+        return new DomainDirector($id, $firstName, $lastName, $middleName, $birthday);
     }
 
     public function domainToDoctrine(?DomainDirector $director): ?DoctrineDirector
