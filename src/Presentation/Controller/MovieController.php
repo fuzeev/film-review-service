@@ -7,6 +7,7 @@ namespace App\Presentation\Controller;
 use App\Application\Dto\GetMovieByIdRequest;
 use App\Application\Usecase\GetMovieByIdUsecase;
 use App\Domain\Entity\Actor;
+use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,20 +38,31 @@ class MovieController extends AbstractController
             return $this->json(null, 404);
         }
 
-        return $this->json($this->movieAsArray($result->movie));
+        return $this->json($this->createArrayMovieResponse($result->movie));
     }
 
-    protected function movieAsArray(Movie $movie): array
+    protected function createArrayMovieResponse(Movie $movie): array
     {
-        $actors = array_map(fn (Actor $actor) => $actor->getShortName(), $movie->actors);
+        $actors = array_map(fn (Actor $actor) => [
+            'id' => $actor->id,
+            'name' => $actor->getShortName()
+        ], $movie->actors);
+
+        $genres = array_map(fn (Genre $genre) => [
+            'id' => $genre->id,
+            'name' => $genre->name,
+        ], $movie->genres);
 
         return [
             'id' => $movie->id,
             'title' => $movie->title,
             'description' => $movie->description,
+            'titleOriginal' => $movie->titleOriginal,
+            'genres' => $genres,
             'year' => $movie->year,
             'director' => $movie->director->getShortName(),
             'source' => $movie->source->value,
+            'coutry' => $movie->country,
             'actors' => $actors,
         ];
     }

@@ -6,6 +6,7 @@ namespace App\Infrastructure\Storage\Repository;
 
 use App\Domain\Entity\Movie as DomainMovie;
 use App\Domain\Repository\IMovieRepository;
+use App\Infrastructure\Storage\Converter\MovieConverter;
 use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,8 +16,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MovieRepository extends ServiceEntityRepository implements IMovieRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private MovieConverter $converter,
+    ) {
         parent::__construct($registry, DoctrineMovie::class);
     }
 
@@ -33,6 +36,6 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
             return null;
         }
 
-        return $movie;
+        return $this->converter->doctrineToDomain($movie);
     }
 }

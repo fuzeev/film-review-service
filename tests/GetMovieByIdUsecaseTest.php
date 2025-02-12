@@ -29,14 +29,15 @@ class GetMovieByIdUsecaseTest extends TestCase
             2024,
             [new Genre(1, 'Комедия'), new Genre(2, 'Драма')],
             new Director(
+                1,
                 'Никита',
                 'Михалков',
                 'Сергеевич',
                 new \DateTimeImmutable('1958-01-01')
             ),
             [
-                new Actor('Иван', 'Иванов', 'Иванович', new \DateTimeImmutable('2000-01-01')),
-                new Actor('Анна', 'Иванова', 'Ивановна', new \DateTimeImmutable('2000-01-01')),
+                new Actor(1, 'Иван', 'Иванов', 'Иванович', new \DateTimeImmutable('2000-01-01')),
+                new Actor(2, 'Анна', 'Иванова', 'Ивановна', new \DateTimeImmutable('2000-01-01')),
             ],
             new Country(123, 'Россия'),
             8.6,
