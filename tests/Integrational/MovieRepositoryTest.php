@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integrational;
 
+use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie as DomainMovie;
 use App\Domain\Enum\MovieSource;
@@ -62,6 +63,9 @@ class MovieRepositoryTest extends KernelTestCase
         $this->assertContains('Криминал', $genreNames);
         $this->assertContains('Драма', $genreNames);
 
+        $this->assertEquals(1, count($domainMovie->actors));
+        $actorNames = array_map(fn (Actor $actor) => $actor->getFullName(), $domainMovie->actors);
+        $this->assertContains('Аль Пачино', $actorNames);
     }
 
     private function getMovieId(): int
