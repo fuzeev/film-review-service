@@ -67,12 +67,4 @@ class MovieRepositoryTest extends KernelTestCase
         $actorNames = array_map(fn (Actor $actor) => $actor->getFullName(), $domainMovie->actors);
         $this->assertContains('Аль Пачино', $actorNames);
     }
-
-    private function getMovieId(): int
-    {
-        /** @var DoctrineMovie $movie */
-        $movie = $this->entityManager->getReference(DomainMovie::class, $this->getReference(MovieFixture::SCARFACE)->getId());
-
-        return $movie->getId();
-    }
 }
