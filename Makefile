@@ -14,6 +14,7 @@ psalm-info:
 	vendor/bin/psalm --show-info=true
 
 test:
+	symfony console doctrine:fixtures:load --env=test --no-interaction --purge-with-truncate && \
 	bin/phpunit
 
 full-check: ecs stan psalm test

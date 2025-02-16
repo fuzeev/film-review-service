@@ -14,7 +14,6 @@ use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie;
 use App\Domain\Enum\MovieSource;
 use App\Domain\Repository\IMovieRepository;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class GetMovieByIdUsecaseTest extends KernelTestCase
