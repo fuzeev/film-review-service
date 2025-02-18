@@ -4,21 +4,30 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Storage\Repository;
 
+use App\Domain\Dto\AddMovieDto;
 use App\Domain\Entity\Movie as DomainMovie;
+use App\Domain\Exception\CannotAddMovieException;
 use App\Domain\Repository\IMovieRepository;
 use App\Infrastructure\Storage\Converter\MovieConverter;
 use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
+use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
+use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
+use App\Infrastructure\Storage\Entity\Country as DoctrineCountry;
+use App\Infrastructure\Storage\Entity\Director as DoctrineDirector;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<DoctrineMovie>
  */
 class MovieRepository extends ServiceEntityRepository implements IMovieRepository
 {
+    use EntityRepositoryTrait;
+
     public function __construct(
         ManagerRegistry $registry,
-        private MovieConverter $converter,
+        readonly private MovieConverter $converter,
     ) {
         parent::__construct($registry, DoctrineMovie::class);
     }
@@ -33,5 +42,32 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
         }
 
         return $this->converter->doctrineToDomain($movie);
+    }
+
+    public function add(AddMovieDto $dto): DomainMovie
+    {
+        $movie = new DoctrineMovie();
+        $movie->setTitle($dto->title);
+        $movie->setDescription($dto->description);
+        $movie->setTitleOriginal($dto->titleOriginal);
+        $movie->setYear($dto->year);
+        foreach ($dto->actorIds as $actorId) {
+            $movie->addActor($this->getEntityManager()->getReference(DoctrineActor::class, $actorId));
+        }
+        foreach ($dto->genreIds as $genreId) {
+            $movie->addGenre($this->getEntityManager()->getReference(DoctrineGenre::class, $genreId));
+        }
+        $movie->setDirector($this->getEntityManager()->getReference(DoctrineDirector::class, $dto->directorId));
+        $movie->setCountry($this->getEntityManager()->getReference(DoctrineCountry::class, $dto->countryId));
+
+        $this->getEntityManager()->persist($movie);
+
+        try {
+            $this->getEntityManager()->flush();
+            return $this->converter->doctrineToDomain($movie);
+        } catch (Exception $e) {
+            //Log::error($e->getMessage());
+            throw new CannotAddMovieException($e->getMessage());
+        }
     }
 }
