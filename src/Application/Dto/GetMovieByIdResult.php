@@ -6,7 +6,7 @@ namespace App\Application\Dto;
 
 use App\Domain\Entity\Movie;
 
-readonly class GetMovieByIdResponse
+readonly class GetMovieByIdResult
 {
     public function __construct(
         public ?Movie $movie,

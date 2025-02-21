@@ -6,7 +6,7 @@ namespace App\Application\Dto;
 
 use App\Domain\Entity\Movie;
 
-readonly class AddMovieResponse
+readonly class AddMovieResult
 {
     public function __construct(
         public bool $success,

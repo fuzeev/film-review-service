@@ -6,7 +6,6 @@ namespace App\Infrastructure\Storage\Repository;
 
 use App\Domain\Dto\AddMovieDto;
 use App\Domain\Entity\Movie as DomainMovie;
-use App\Domain\Exception\CannotAddMovieException;
 use App\Domain\Repository\IMovieRepository;
 use App\Infrastructure\Storage\Converter\MovieConverter;
 use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
@@ -14,6 +13,7 @@ use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
 use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
 use App\Infrastructure\Storage\Entity\Country as DoctrineCountry;
 use App\Infrastructure\Storage\Entity\Director as DoctrineDirector;
+use App\Infrastructure\Storage\Exception\MoviePersistenceException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -66,8 +66,8 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
             $this->getEntityManager()->flush();
             return $this->converter->doctrineToDomain($movie);
         } catch (Exception $e) {
-            //Log::error($e->getMessage());
-            throw new CannotAddMovieException($e->getMessage());
+            //Log::error($e->getMessage()); //после добавления логирования здесь будет логироваться ошибка
+            throw new MoviePersistenceException;
         }
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit;
 
 use App\Application\Dto\GetMovieByIdRequest;
-use App\Application\Dto\GetMovieByIdResponse;
+use App\Application\Dto\GetMovieByIdResult;
 use App\Application\Usecase\GetMovieByIdUsecase;
 use App\Domain\Entity\Actor;
 use App\Domain\Entity\Country;
@@ -67,7 +67,7 @@ class GetMovieByIdUsecaseTest extends KernelTestCase
         $response = $usecase->execute($request);
 
         // Проверяем, что получен корректный ответ
-        $this->assertInstanceOf(GetMovieByIdResponse::class, $response);
+        $this->assertInstanceOf(GetMovieByIdResult::class, $response);
         $this->assertSame($movie, $response->movie);
     }
 
@@ -92,7 +92,7 @@ class GetMovieByIdUsecaseTest extends KernelTestCase
         $response = $usecase->execute($request);
 
         // Проверяем, что в ответе свойство movie равно null
-        $this->assertInstanceOf(GetMovieByIdResponse::class, $response);
+        $this->assertInstanceOf(GetMovieByIdResult::class, $response);
         $this->assertNull($response->movie);
     }
 }

@@ -6,7 +6,7 @@ namespace App\Domain\Repository;
 
 use App\Domain\Dto\AddMovieDto;
 use App\Domain\Entity\Movie;
-use App\Domain\Exception\CannotAddMovieException;
+use App\Domain\Exception\PersistenceException;
 
 interface IMovieRepository extends IEntityRepository
 {
@@ -24,7 +24,7 @@ interface IMovieRepository extends IEntityRepository
      *
      * @param AddMovieDto $dto
      * @return Movie
-     * @throws CannotAddMovieException
+     * @throws PersistenceException
      */
     public function add(AddMovieDto $dto): Movie;
 }

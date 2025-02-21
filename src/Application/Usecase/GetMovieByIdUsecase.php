@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Usecase;
 
 use App\Application\Dto\GetMovieByIdRequest;
-use App\Application\Dto\GetMovieByIdResponse;
+use App\Application\Dto\GetMovieByIdResult;
 use App\Domain\Repository\IMovieRepository;
 
 class GetMovieByIdUsecase
@@ -15,12 +15,12 @@ class GetMovieByIdUsecase
     ) {
     }
 
-    public function execute(GetMovieByIdRequest $request): GetMovieByIdResponse
+    public function execute(GetMovieByIdRequest $request): GetMovieByIdResult
     {
         $id = $request->movieId;
 
         $movie = $this->movieRepository->getById($id);
 
-        return new GetMovieByIdResponse($movie);
+        return new GetMovieByIdResult($movie);
     }
 }
