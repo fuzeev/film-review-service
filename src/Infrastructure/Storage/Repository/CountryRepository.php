@@ -4,42 +4,31 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Storage\Repository;
 
-use App\Infrastructure\Storage\Entity\Country;
+use App\Domain\Repository\ICountryRepository;
+use App\Infrastructure\Storage\Converter\CountryConverter;
+use App\Infrastructure\Storage\Entity\Country as DoctrineCountry;
+use App\Domain\Entity\Country as DomainCountry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Country>
  */
-class CountryRepository extends ServiceEntityRepository
+class CountryRepository extends ServiceEntityRepository implements ICountryRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    use EntityRepositoryTrait;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        protected CountryConverter $converter,
+    )
     {
-        parent::__construct($registry, Country::class);
+        parent::__construct($registry, DoctrineCountry::class);
     }
 
-    //    /**
-    //     * @return Country[] Returns an array of Country objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Country
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getById(int $id): ?DomainCountry
+    {
+        $model = $this->find($id);
+        return $this->converter->doctrineToDomain($model);
+    }
 }

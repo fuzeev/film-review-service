@@ -4,42 +4,30 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Storage\Repository;
 
-use App\Infrastructure\Storage\Entity\Actor;
+use App\Domain\Repository\IActorRepository;
+use App\Infrastructure\Storage\Converter\ActorConverter;
+use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
+use App\Domain\Entity\Actor as DomainActor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Actor>
  */
-class ActorRepository extends ServiceEntityRepository
+class ActorRepository extends ServiceEntityRepository implements IActorRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Actor::class);
+    use EntityRepositoryTrait;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        protected ActorConverter $converter,
+    )    {
+        parent::__construct($registry, DoctrineActor::class);
     }
 
-    //    /**
-    //     * @return Actor[] Returns an array of Actor objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Actor
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getById(int $id): ?DomainActor
+    {
+        $model = $this->find($id);
+        return $this->converter->doctrineToDomain($model);
+    }
 }

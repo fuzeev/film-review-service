@@ -4,42 +4,31 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Storage\Repository;
 
-use App\Infrastructure\Storage\Entity\Director;
+use App\Domain\Repository\IDirectorRepository;
+use App\Infrastructure\Storage\Converter\DirectorConverter;
+use App\Infrastructure\Storage\Entity\Director as DoctrineDirector;
+use App\Domain\Entity\Director as DomainDirector;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Director>
  */
-class DirectorRepository extends ServiceEntityRepository
+class DirectorRepository extends ServiceEntityRepository implements IDirectorRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    use EntityRepositoryTrait;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        protected DirectorConverter $converter,
+    )
     {
-        parent::__construct($registry, Director::class);
+        parent::__construct($registry, DoctrineDirector::class);
     }
 
-    //    /**
-    //     * @return Director[] Returns an array of Director objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Director
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function getById(int $id): ?DomainDirector
+    {
+        $model = $this->find($id);
+        return $this->converter->doctrineToDomain($model);
+    }
 }

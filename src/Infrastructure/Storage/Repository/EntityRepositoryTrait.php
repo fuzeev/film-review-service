@@ -4,6 +4,7 @@ namespace App\Infrastructure\Storage\Repository;
 
 trait EntityRepositoryTrait
 {
+
     public function checkIdExists(int $id): bool
     {
         return $this->find($id) !== null;

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Presentation\Controller;
 
+use App\Application\Dto\AddMovieRequest;
 use App\Application\Dto\GetMovieByIdRequest;
+use App\Application\Usecase\AddMovieUsecase;
 use App\Application\Usecase\GetMovieByIdUsecase;
 use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use JsonException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -18,6 +21,7 @@ class MovieController extends AbstractController
 {
     public function __construct(
         protected GetMovieByIdUsecase $getMovieByIdUsecase,
+        protected AddMovieUsecase $addMovieUsecase,
         protected ValidatorInterface $validator,
     ) {
     }
@@ -29,19 +33,49 @@ class MovieController extends AbstractController
 
         $errors = $this->validator->validate($requestDto);
         if (count($errors) > 0) {
-            return $this->json($errors, 400);
+            return $this->validationErrorResponse($errors);
         }
 
         $result = $this->getMovieByIdUsecase->execute($requestDto);
 
         if (! $result->movie) {
-            return $this->json(null, 404);
+            return $this->json(null, Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($this->createArrayMovieResponse($result->movie));
+        return $this->json($this->createMovieResponse($result->movie));
     }
 
-    protected function createArrayMovieResponse(Movie $movie): array
+    #[Route('/movie', name: 'add_movie', methods: ['POST'])]
+    public function addMovieHandler(Request $request): Response
+    {
+        try {
+            $requestDecoded = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            return $this->json(null, 400);
+        }
+
+        $dto = new AddMovieRequest(
+            title: $requestDecoded['title'] ?? null,
+            description: $requestDecoded['description'] ?? null,
+            titleOriginal: $requestDecoded['titleOriginal'] ?? null,
+            year: $requestDecoded['year'] ?? null,
+            genreIds: $requestDecoded['genreIds'] ?? null,
+            directorId: $requestDecoded['directorId'] ?? null,
+            actorIds: $requestDecoded['actorIds'] ?? null,
+            countryId: $requestDecoded['countryId'] ?? null,
+        );
+
+        $errors = $this->validator->validate($dto);
+        if (count($errors) > 0) {
+            return $this->validationErrorResponse($errors);
+        }
+
+        $result = $this->addMovieUsecase->execute($dto);
+
+        return $this->json($result, Response::HTTP_CREATED);
+    }
+
+    protected function createMovieResponse(Movie $movie): array
     {
         $actors = array_map(fn (Actor $actor) => [
             'id' => $actor->id,
