@@ -31,20 +31,12 @@ class AddMovieUsecase
             $message = 'Возникла неизвестная ошибка';
         }
 
-        return new AddMovieResult(
-            false,
-            null,
-            $message,
-        );
+        return new AddMovieResult(false, null, $message);
     }
 
     protected function successResponse(int $movieId): AddMovieResult
     {
-        return new AddMovieResult(
-            true,
-            $movieId,
-            null,
-        );
+        return new AddMovieResult(true, $movieId, null);
     }
 
     protected function findNonExistentGenreIds(array $genreIds): array
@@ -70,7 +62,7 @@ class AddMovieUsecase
     public function execute(AddMovieRequest $request): AddMovieResult
     {
         $dto = new AddMovieDto(
-            source:  MovieSource::MANUAL,
+            source: MovieSource::MANUAL,
             title: $request->title,
             description: $request->description,
             titleOriginal: $request->titleOriginal,
@@ -83,16 +75,19 @@ class AddMovieUsecase
 
         $errors = [];
         if ($nonExistingGenres = $this->findNonExistentGenreIds($dto->genreIds)) {
-            $errors[] = "Следующие жанры не существуют: " . implode(', ', $nonExistingGenres);
+            $errors[] = 'Следующие жанры не существуют: ' . implode(', ', $nonExistingGenres);
         }
         if ($nonExistingActors = $this->findNonExistentActorIds($dto->actorIds)) {
-            $errors[] = "Следующие актеры не существуют: " . implode(', ', $nonExistingActors);
+            $errors[] = 'Следующие актеры не существуют: ' . implode(
+                ', ',
+                $nonExistingActors
+            );
         }
-        if (!$this->checkDirectorId($dto->directorId)) {
-            $errors[] = "Режиссер $dto->directorId не существует";
+        if (! $this->checkDirectorId($dto->directorId)) {
+            $errors[] = "Режиссер {$dto->directorId} не существует";
         }
-        if (!$this->checkCountryId($dto->countryId)) {
-            $errors[] = "Страна $dto->countryId не существует";
+        if (! $this->checkCountryId($dto->countryId)) {
+            $errors[] = "Страна {$dto->countryId} не существует";
         }
 
         if ($errors !== []) {

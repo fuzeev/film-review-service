@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Application\Dto;
 
-use App\Domain\Enum\MovieSource;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddMovieRequest
@@ -28,20 +27,14 @@ class AddMovieRequest
         public $year,
         #[Assert\Type('array')]
         #[Assert\NotBlank]
-        #[Assert\All([
-            new Assert\Type('integer'),
-            new Assert\Positive,
-        ])]
+        #[Assert\All([new Assert\Type('integer'), new Assert\Positive()])]
         public $genreIds,
         #[Assert\Type('integer')]
         #[Assert\Positive]
         #[Assert\NotBlank]
         public $directorId,
         #[Assert\Type('array')]
-        #[Assert\All([
-            new Assert\Type('integer'),
-            new Assert\Positive,
-        ])]
+        #[Assert\All([new Assert\Type('integer'), new Assert\Positive()])]
         #[Assert\NotBlank]
         public $actorIds,
         #[Assert\Type('integer')]

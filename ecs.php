@@ -111,11 +111,6 @@ return static function (ECSConfig $ecsConfig): void {
         'statements' => ['return'],
     ]);
 
-    $ecsConfig->ruleWithConfiguration(CyclomaticComplexitySniff::class, [
-        'complexity' => 5,
-        'absoluteComplexity' => 5,
-    ]);
-
     $ecsConfig->ruleWithConfiguration(LineLengthSniff::class, [
         'absoluteLineLimit' => 120,
     ]);

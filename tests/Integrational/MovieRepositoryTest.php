@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class MovieRepositoryTest extends KernelTestCase
 {
     private EntityManagerInterface $entityManager;
+
     private MovieRepository $movieRepository;
 
     protected function setUp(): void
@@ -37,7 +38,9 @@ class MovieRepositoryTest extends KernelTestCase
     {
         return $this->entityManager
             ->getRepository(DoctrineMovie::class)
-            ->findOneBy(['title_original' => 'Scarface']);
+            ->findOneBy([
+                'title_original' => 'Scarface',
+            ]);
     }
 
     public function testFindById(): void

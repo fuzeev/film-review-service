@@ -10,9 +10,6 @@ interface IGenreRepository extends IEntityRepository
 {
     /**
      * Возвращает сущность жанра, либо null, если жанр с таким id не существует
-     *
-     * @param int $id
-     * @return Genre|null
      */
     public function getById(int $id): ?Genre;
 }

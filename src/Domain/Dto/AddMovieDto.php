@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Dto;
 
-use App\Domain\Entity\Country;
-use App\Domain\Entity\Director;
 use App\Domain\Enum\MovieSource;
 
 readonly class AddMovieDto
