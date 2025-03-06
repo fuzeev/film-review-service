@@ -46,8 +46,12 @@ class MovieRepositoryTest extends KernelTestCase
     public function testFindById(): void
     {
         $movie = $this->getTestMovie();
-
         if ($movie === null) {
+            throw new Exception('Фикстуры не загружены');
+        }
+
+        $id = $movie->getId();
+        if ($id === null) {
             throw new Exception('Фикстуры не загружены');
         }
 
