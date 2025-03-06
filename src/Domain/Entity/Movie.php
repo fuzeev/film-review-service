@@ -17,7 +17,7 @@ use App\Domain\Enum\MovieSource;
  * @property Genre[] $genres        Массив жанров (объекты класса Genre).
  * @property Director $director      Режиссёр фильма.
  * @property Actor[] $actors        Массив актёров (объекты класса Actor).
- * @property float $rating        Рейтинг фильма.
+ * @property float|null $rating        Рейтинг фильма.
  */
 class Movie
 {
@@ -32,7 +32,7 @@ class Movie
         public Director $director,
         public array $actors,
         public Country $country,
-        public float $rating,
+        public ?float $rating,
     ) {
     }
 }

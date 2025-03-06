@@ -8,8 +8,6 @@ use App\Application\Dto\AddMovieRequest;
 use App\Application\Dto\AddMovieResult;
 use App\Domain\Dto\AddMovieDto;
 use App\Domain\Enum\MovieSource;
-use App\Domain\Exception\CannotAddMovieException;
-use App\Domain\Exception\PersistenceException;
 use App\Domain\Repository\IActorRepository;
 use App\Domain\Repository\ICountryRepository;
 use App\Domain\Repository\IDirectorRepository;
@@ -66,7 +64,7 @@ class AddMovieUsecase
 
     protected function checkCountryId(int $countryId): bool
     {
-        return $this->directorRepository->checkIdExists($countryId);
+        return $this->countryRepository->checkIdExists($countryId);
     }
 
     public function execute(AddMovieRequest $request): AddMovieResult

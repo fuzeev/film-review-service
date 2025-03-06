@@ -50,7 +50,6 @@ readonly class MovieConverter
             || $year === null
             || $director === null
             || $country === null
-            || $rating === null
         ) {
             throw new FailedToConvertException(DoctrineMovie::class, DomainMovie::class);
         }

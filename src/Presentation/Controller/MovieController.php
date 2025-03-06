@@ -11,6 +11,7 @@ use App\Application\Usecase\GetMovieByIdUsecase;
 use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie;
+use App\Domain\Exception\PersistenceException;
 use JsonException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +52,7 @@ class MovieController extends AbstractController
         try {
             $requestDecoded = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException) {
-            return $this->json(null, 400);
+            return $this->json("Invalid Json", 400);
         }
 
         $dto = new AddMovieRequest(
@@ -71,6 +72,10 @@ class MovieController extends AbstractController
         }
 
         $result = $this->addMovieUsecase->execute($dto);
+
+        if (!$result->success) {
+            return $this->json($result->error, Response::HTTP_BAD_REQUEST);
+        }
 
         return $this->json($result, Response::HTTP_CREATED);
     }

@@ -48,6 +48,7 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
     {
         $movie = new DoctrineMovie();
         $movie->setTitle($dto->title);
+        $movie->setSource($dto->source);
         $movie->setDescription($dto->description);
         $movie->setTitleOriginal($dto->titleOriginal);
         $movie->setYear($dto->year);

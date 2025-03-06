@@ -19,7 +19,6 @@ abstract class AbstractController extends SymfonyAbstractController
             ];
         }
 
-//        return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
-        return $this->json($errors, 418);
+        return $this->json($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
