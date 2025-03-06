@@ -12,7 +12,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Country>
+ * @extends ServiceEntityRepository<DoctrineCountry>
  */
 class CountryRepository extends ServiceEntityRepository implements ICountryRepository
 {

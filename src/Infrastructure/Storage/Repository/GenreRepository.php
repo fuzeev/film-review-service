@@ -12,7 +12,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Genre>
+ * @extends ServiceEntityRepository<DoctrineGenre>
  */
 class GenreRepository extends ServiceEntityRepository implements IGenreRepository
 {

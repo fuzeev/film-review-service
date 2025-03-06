@@ -12,7 +12,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Actor>
+ * @extends ServiceEntityRepository<DoctrineActor>
  */
 class ActorRepository extends ServiceEntityRepository implements IActorRepository
 {
