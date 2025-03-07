@@ -46,7 +46,7 @@ class MovieRepositoryTest extends KernelTestCase
             ]);
     }
 
-    public function testFindById(): void
+    public function testFindByIdExisting(): void
     {
         $movie = $this->getTestMovie();
         if ($movie === null) {
@@ -76,6 +76,29 @@ class MovieRepositoryTest extends KernelTestCase
         $this->assertEquals(1, count($domainMovie->actors));
         $actorNames = array_map(fn (Actor $actor) => $actor->getFullName(), $domainMovie->actors);
         $this->assertContains('Аль Пачино', $actorNames);
+    }
+
+    public function testFindByIdNonExisting(): void
+    {
+        $maxId = (int) $this->entityManager->createQueryBuilder()
+            ->select('MAX(m.id)')
+            ->from(DoctrineMovie::class, 'm')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $nonExistingId = $maxId + 1;
+        $result = $this->movieRepository->getById($nonExistingId);
+
+        $this->assertNull($result);
+    }
+
+    public function testFindByIdInvalid(): void
+    {
+        foreach ([-1, 0] as $id) {
+            $result = $this->movieRepository->getById($id);
+
+            $this->assertNull($result);
+        }
     }
 
     public function testAddMovie()
