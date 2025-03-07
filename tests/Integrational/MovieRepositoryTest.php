@@ -9,9 +9,9 @@ use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie as DomainMovie;
 use App\Domain\Enum\MovieSource;
-use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
-use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
 use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
+use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
+use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
 use App\Infrastructure\Storage\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -58,7 +58,7 @@ class MovieRepositoryTest extends KernelTestCase
             throw new Exception('Фикстуры не загружены');
         }
 
-        $domainMovie = $this->movieRepository->getById($movie->getId());
+        $domainMovie = $this->movieRepository->getById($id);
 
         $this->assertInstanceOf(DomainMovie::class, $domainMovie);
         $this->assertEquals('Лицо со шрамом', $domainMovie->title);
@@ -109,12 +109,14 @@ class MovieRepositoryTest extends KernelTestCase
             throw new Exception('Фикстуры не загружены');
         }
 
-        $genreIds = $movie->getGenres()?->map(fn (DoctrineGenre $genre) => $genre->getId())->toArray();
-        $actorIds = $movie->getActors()?->map(fn (DoctrineActor $actor) => $actor->getId())->toArray();
+        $genreIds = $movie->getGenres()->map(fn (DoctrineGenre $genre) => $genre->getId())
+            ->toArray();
+        $actorIds = $movie->getActors()->map(fn (DoctrineActor $actor) => $actor->getId())
+            ->toArray();
         $director = $movie->getDirector()?->getId();
         $country = $movie->getCountry()?->getId();
 
-        if (!$genreIds || !$actorIds || !$director || !$country) {
+        if (! $genreIds || ! $actorIds || ! $director || ! $country) {
             throw new Exception('Фикстуры не загружены');
         }
 
@@ -139,15 +141,14 @@ class MovieRepositoryTest extends KernelTestCase
         $insertedMovie = $this->movieRepository->add($dto);
 
         $this->assertInstanceOf(DomainMovie::class, $insertedMovie);
-        $this->assertNotNull($insertedMovie->id);
         $this->assertGreaterThan(0, $insertedMovie->id);
         $this->assertEquals($name, $insertedMovie->title);
         $this->assertEquals($desc, $insertedMovie->description);
         $this->assertEquals($titleOriginal, $insertedMovie->titleOriginal);
         $this->assertEquals($year, $insertedMovie->year);
         $this->assertEquals($source, $insertedMovie->source);
-        $this->assertEquals($director, $insertedMovie->director?->id);
-        $this->assertEquals($country, $insertedMovie->country?->id);
+        $this->assertEquals($director, $insertedMovie->director->id);
+        $this->assertEquals($country, $insertedMovie->country->id);
         $this->assertEquals(count($genreIds), count($insertedMovie->genres));
         $this->assertEquals(count($actorIds), count($insertedMovie->actors));
     }
