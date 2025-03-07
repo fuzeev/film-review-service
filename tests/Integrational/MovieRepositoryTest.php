@@ -49,14 +49,18 @@ class MovieRepositoryTest extends KernelTestCase
 
     /**
      * Возвращает несуществующий id для заданной сущности (максимальный id + 1)
+     *
+     * @param class-string $entityClass
+     * @return int
      */
     protected function getNonExistingId(string $entityClass): int
     {
         $maxId = (int) $this->entityManager->createQueryBuilder()
-            ->select("MAX(e.id)")
+            ->select('MAX(e.id)')
             ->from($entityClass, 'e')
             ->getQuery()
             ->getSingleScalarResult();
+
         return $maxId + 1;
     }
 
@@ -116,9 +120,11 @@ class MovieRepositoryTest extends KernelTestCase
             throw new Exception('Фикстуры не загружены');
         }
 
-        $genreIds = $movie->getGenres()->map(fn (DoctrineGenre $genre) => $genre->getId())
+        $genreIds = $movie->getGenres()
+            ->map(fn (DoctrineGenre $genre) => $genre->getId())
             ->toArray();
-        $actorIds = $movie->getActors()->map(fn (DoctrineActor $actor) => $actor->getId())
+        $actorIds = $movie->getActors()
+            ->map(fn (DoctrineActor $actor) => $actor->getId())
             ->toArray();
         $director = $movie->getDirector()?->getId();
         $country = $movie->getCountry()?->getId();
@@ -170,12 +176,16 @@ class MovieRepositoryTest extends KernelTestCase
             throw new Exception('Фикстуры не загружены');
         }
 
-        $genreIds = $movie->getGenres()->map(fn (DoctrineGenre $genre) => $genre->getId())->toArray();
-        $actorIds = $movie->getActors()->map(fn (DoctrineActor $actor) => $actor->getId())->toArray();
+        $genreIds = $movie->getGenres()
+            ->map(fn (DoctrineGenre $genre) => $genre->getId())
+            ->toArray();
+        $actorIds = $movie->getActors()
+            ->map(fn (DoctrineActor $actor) => $actor->getId())
+            ->toArray();
         $director = $movie->getDirector()?->getId();
         $country = $movie->getCountry()?->getId();
 
-        if (!$genreIds || !$actorIds || !$director || !$country) {
+        if (! $genreIds || ! $actorIds || ! $director || ! $country) {
             throw new Exception('Фикстуры не загружены');
         }
 
@@ -209,17 +219,21 @@ class MovieRepositoryTest extends KernelTestCase
             throw new Exception('Фикстуры не загружены');
         }
 
-        $genreIds = $movie->getGenres()->map(fn (DoctrineGenre $genre) => $genre->getId())->toArray();
-        $actorIds = $movie->getActors()->map(fn (DoctrineActor $actor) => $actor->getId())->toArray();
-        $director = $movie->getDirector()?->getId();
+        $genreIds = $movie->getGenres()
+            ->map(fn (DoctrineGenre $genre) => $genre->getId())
+            ->toArray();
+        $actorIds = $movie->getActors()
+            ->map(fn (DoctrineActor $actor) => $actor->getId())
+            ->toArray();
+        $director = $movie->getDirector();
         $country = $movie->getCountry()?->getId();
 
-        if (!$genreIds || !$actorIds || !$director || !$country) {
+        if (! $genreIds || ! $actorIds || ! $director || ! $country) {
             throw new Exception('Фикстуры не загружены');
         }
 
         // Устанавливаем невалидный id режиссёра
-        $invalidDirectorId = $this->getNonExistingId(get_class($movie->getDirector()));
+        $invalidDirectorId = $this->getNonExistingId(get_class($director));
 
         $dto = new AddMovieDto(
             source: MovieSource::MANUAL,
@@ -247,12 +261,16 @@ class MovieRepositoryTest extends KernelTestCase
             throw new Exception('Фикстуры не загружены');
         }
 
-        $genreIds = $movie->getGenres()->map(fn (DoctrineGenre $genre) => $genre->getId())->toArray();
-        $actorIds = $movie->getActors()->map(fn (DoctrineActor $actor) => $actor->getId())->toArray();
+        $genreIds = $movie->getGenres()
+            ->map(fn (DoctrineGenre $genre) => $genre->getId())
+            ->toArray();
+        $actorIds = $movie->getActors()
+            ->map(fn (DoctrineActor $actor) => $actor->getId())
+            ->toArray();
         $director = $movie->getDirector()?->getId();
         $country = $movie->getCountry()?->getId();
 
-        if (!$genreIds || !$actorIds || !$director || !$country) {
+        if (! $genreIds || ! $actorIds || ! $director || ! $country) {
             throw new Exception('Фикстуры не загружены');
         }
 
@@ -286,17 +304,21 @@ class MovieRepositoryTest extends KernelTestCase
             throw new Exception('Фикстуры не загружены');
         }
 
-        $genreIds = $movie->getGenres()->map(fn (DoctrineGenre $genre) => $genre->getId())->toArray();
-        $actorIds = $movie->getActors()->map(fn (DoctrineActor $actor) => $actor->getId())->toArray();
+        $genreIds = $movie->getGenres()
+            ->map(fn (DoctrineGenre $genre) => $genre->getId())
+            ->toArray();
+        $actorIds = $movie->getActors()
+            ->map(fn (DoctrineActor $actor) => $actor->getId())
+            ->toArray();
         $director = $movie->getDirector()?->getId();
-        $country = $movie->getCountry()?->getId();
+        $country = $movie->getCountry();
 
-        if (!$genreIds || !$actorIds || !$director || !$country) {
+        if (! $genreIds || ! $actorIds || ! $director || ! $country) {
             throw new Exception('Фикстуры не загружены');
         }
 
         // Устанавливаем невалидный id страны
-        $invalidCountryId = $this->getNonExistingId(get_class($movie->getCountry()));
+        $invalidCountryId = $this->getNonExistingId(get_class($country));
 
         $dto = new AddMovieDto(
             source: MovieSource::MANUAL,
