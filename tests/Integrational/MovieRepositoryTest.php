@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Integrational;
 
+use App\Domain\Dto\AddMovieDto;
 use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie as DomainMovie;
 use App\Domain\Enum\MovieSource;
 use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
+use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
+use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
 use App\Infrastructure\Storage\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -73,5 +76,56 @@ class MovieRepositoryTest extends KernelTestCase
         $this->assertEquals(1, count($domainMovie->actors));
         $actorNames = array_map(fn (Actor $actor) => $actor->getFullName(), $domainMovie->actors);
         $this->assertContains('Аль Пачино', $actorNames);
+    }
+
+    public function testAddMovie()
+    {
+        //берем какой то имеющийся в системе фильм чтобы с него скопировать id зависимостей
+        $movie = $this->getTestMovie();
+        if ($movie === null) {
+            throw new Exception('Фикстуры не загружены');
+        }
+
+        $genreIds = $movie->getGenres()?->map(fn (DoctrineGenre $genre) => $genre->getId())->toArray();
+        $actorIds = $movie->getActors()?->map(fn (DoctrineActor $actor) => $actor->getId())->toArray();
+        $director = $movie->getDirector()?->getId();
+        $country = $movie->getCountry()?->getId();
+
+        if (!$genreIds || !$actorIds || !$director || !$country) {
+            throw new Exception('Фикстуры не загружены');
+        }
+
+        $name = 'Тестовый фильм (добавление)';
+        $desc = 'Тестовое описание фильма';
+        $titleOriginal = 'Test';
+        $year = 2025;
+        $source = MovieSource::MANUAL;
+
+        $dto = new AddMovieDto(
+            source: $source,
+            title: $name,
+            description: $desc,
+            titleOriginal: $titleOriginal,
+            year: $year,
+            genreIds: $genreIds,
+            directorId: $director,
+            actorIds: $actorIds,
+            countryId: $country,
+        );
+
+        $insertedMovie = $this->movieRepository->add($dto);
+
+        $this->assertInstanceOf(DomainMovie::class, $insertedMovie);
+        $this->assertNotNull($insertedMovie->id);
+        $this->assertGreaterThan(0, $insertedMovie->id);
+        $this->assertEquals($name, $insertedMovie->title);
+        $this->assertEquals($desc, $insertedMovie->description);
+        $this->assertEquals($titleOriginal, $insertedMovie->titleOriginal);
+        $this->assertEquals($year, $insertedMovie->year);
+        $this->assertEquals($source, $insertedMovie->source);
+        $this->assertEquals($director, $insertedMovie->director?->id);
+        $this->assertEquals($country, $insertedMovie->country?->id);
+        $this->assertEquals(count($genreIds), count($insertedMovie->genres));
+        $this->assertEquals(count($actorIds), count($insertedMovie->actors));
     }
 }
