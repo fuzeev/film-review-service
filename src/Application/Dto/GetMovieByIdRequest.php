@@ -6,12 +6,13 @@ namespace App\Application\Dto;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-readonly class GetMovieByIdRequest
+class GetMovieByIdRequest
 {
     public function __construct(
         #[Assert\NotBlank]
+        #[Assert\Type('int')]
         #[Assert\GreaterThan(0)]
-        public int $movieId,
+        public $movieId,
     ) {
     }
 }
