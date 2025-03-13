@@ -6,8 +6,10 @@ namespace App\Presentation\Controller;
 
 use App\Application\Dto\AddMovieRequest;
 use App\Application\Dto\GetMovieByIdRequest;
+use App\Application\Dto\GetMovieListRequest;
 use App\Application\Usecase\AddMovieUsecase;
 use App\Application\Usecase\GetMovieByIdUsecase;
+use App\Application\Usecase\GetMovieListUsecase;
 use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie;
@@ -22,6 +24,7 @@ class MovieController extends AbstractController
     public function __construct(
         protected GetMovieByIdUsecase $getMovieByIdUsecase,
         protected AddMovieUsecase $addMovieUsecase,
+        protected GetMovieListUsecase $getMovieListUsecase,
         protected ValidatorInterface $validator,
     ) {
     }
@@ -77,6 +80,53 @@ class MovieController extends AbstractController
         }
 
         return $this->json($result, Response::HTTP_CREATED);
+    }
+
+    #[Route('/movies', name: 'get_movie_list', methods: ['POST'])]
+    public function getMovieListHandler(Request $request): Response
+    {
+        try {
+            $requestDecoded = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            return $this->json('Invalid Json', 400);
+        }
+
+        $dto = new GetMovieListRequest(
+            actorId: $requestDecoded['actorId'] ?? null,
+            directorId: $requestDecoded['directorId'] ?? null,
+            title: $requestDecoded['title'] ?? null,
+            titleOriginal: $requestDecoded['titleOriginal'] ?? null,
+            yearStart: $requestDecoded['yearStart'] ?? null,
+            yearEnd: $requestDecoded['yearEnd'] ?? null,
+            countryId: $requestDecoded['countryId'] ?? null,
+            genreId: $requestDecoded['genreIds'] ?? null,
+            ratingMin: $requestDecoded['ratingMin'] ?? null,
+            sortBy: $requestDecoded['sortBy'] ?? null,
+            sortType: $requestDecoded['sortType'] ?? null,
+            limit: $requestDecoded['limit'] ?? null,
+            offset: $requestDecoded['offset'] ?? null,
+        );
+
+        $errors = $this->validator->validate($dto);
+        if (count($errors) > 0) {
+            return $this->validationErrorResponse($errors);
+        }
+
+        $result = $this->getMovieListUsecase->execute($dto);
+
+        $movies = $result->movies
+            ? array_map(fn (Movie $movie) => $this->createMovieResponse($movie), $result->movies)
+            : null;
+
+        return $this->json([
+            'errors' => $result->errors,
+            'movies' => $movies,
+            'totalCount' => $result->totalCount,
+            'limit' => $result->limit,
+            'offset' => $result->offset,
+            'sortBy' => $result->sortBy,
+            'sortType' => $result->sortType,
+        ], Response::HTTP_OK);
     }
 
     protected function createMovieResponse(Movie $movie): array

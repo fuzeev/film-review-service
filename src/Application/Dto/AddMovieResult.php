@@ -6,10 +6,20 @@ namespace App\Application\Dto;
 
 readonly class AddMovieResult
 {
-    public function __construct(
+    private function __construct(
         public bool $success,
         public ?int $movieId,
-        public ?string $error,
+        public ?array $errors,
     ) {
+    }
+
+    public static function success(int $movieId): self
+    {
+        return new self(true, $movieId, null);
+    }
+
+    public static function error(array $errors): self
+    {
+        return new self(false, null, $errors);
     }
 }

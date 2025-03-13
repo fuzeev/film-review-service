@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Infrastructure\Storage\Repository;
 
 use App\Domain\Dto\AddMovieDto;
+use App\Domain\Dto\GetMovieListQuery;
+use App\Domain\Dto\GetMovieListResult;
 use App\Domain\Entity\Movie as DomainMovie;
 use App\Domain\Repository\IMovieRepository;
 use App\Infrastructure\Storage\Converter\MovieConverter;
@@ -73,5 +75,17 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
             //Log::error($e->getMessage()); //после добавления логирования здесь будет логироваться ошибка
             throw new MoviePersistenceException();
         }
+    }
+
+    public function getList(GetMovieListQuery $dto): GetMovieListResult
+    {
+        return new GetMovieListResult(
+            movies: [],
+            limit: $dto->limit,
+            offset: $dto->offset,
+            totalCount: 0,
+            sortBy: $dto->sortBy,
+            sortType: $dto->sortType,
+        );
     }
 }

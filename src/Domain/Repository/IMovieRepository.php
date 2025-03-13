@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Repository;
 
 use App\Domain\Dto\AddMovieDto;
+use App\Domain\Dto\GetMovieListQuery;
+use App\Domain\Dto\GetMovieListResult;
 use App\Domain\Entity\Movie;
 
 interface IMovieRepository extends IEntityRepository
@@ -19,4 +21,12 @@ interface IMovieRepository extends IEntityRepository
      * Если не удалось, бросает исключение.
      */
     public function add(AddMovieDto $dto): Movie;
+
+    /**
+     * Возвращает список фильмов в соответствии с фильтрами, примененными в объекте запроса
+     *
+     * @param GetMovieListQuery $dto
+     * @return GetMovieListResult
+     */
+    public function getList(GetMovieListQuery $dto): GetMovieListResult;
 }

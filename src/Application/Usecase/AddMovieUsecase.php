@@ -25,40 +25,6 @@ class AddMovieUsecase
     ) {
     }
 
-    protected function errorResponse(string $message = ''): AddMovieResult
-    {
-        if ($message === '') {
-            $message = 'Возникла неизвестная ошибка';
-        }
-
-        return new AddMovieResult(false, null, $message);
-    }
-
-    protected function successResponse(int $movieId): AddMovieResult
-    {
-        return new AddMovieResult(true, $movieId, null);
-    }
-
-    protected function findNonExistentGenreIds(array $genreIds): array
-    {
-        return $this->genreRepository->findNonExistentIds($genreIds);
-    }
-
-    protected function findNonExistentActorIds(array $actorTds): array
-    {
-        return $this->actorRepository->findNonExistentIds($actorTds);
-    }
-
-    protected function checkDirectorId(int $directorId): bool
-    {
-        return $this->directorRepository->checkIdExists($directorId);
-    }
-
-    protected function checkCountryId(int $countryId): bool
-    {
-        return $this->countryRepository->checkIdExists($countryId);
-    }
-
     public function execute(AddMovieRequest $request): AddMovieResult
     {
         $dto = new AddMovieDto(
@@ -74,28 +40,28 @@ class AddMovieUsecase
         );
 
         $errors = [];
-        if ($nonExistingGenres = $this->findNonExistentGenreIds($dto->genreIds)) {
+        if ($nonExistingGenres = $this->genreRepository->findNonExistentIds($dto->genreIds)) {
             $errors[] = 'Следующие жанры не существуют: ' . implode(', ', $nonExistingGenres);
         }
-        if ($nonExistingActors = $this->findNonExistentActorIds($dto->actorIds)) {
+        if ($nonExistingActors = $this->actorRepository->findNonExistentIds($dto->actorIds)) {
             $errors[] = 'Следующие актеры не существуют: ' . implode(
                 ', ',
                 $nonExistingActors
             );
         }
-        if (! $this->checkDirectorId($dto->directorId)) {
+        if (! $this->directorRepository->checkIdExists($dto->directorId)) {
             $errors[] = "Режиссер {$dto->directorId} не существует";
         }
-        if (! $this->checkCountryId($dto->countryId)) {
+        if (! $this->countryRepository->checkIdExists($dto->countryId)) {
             $errors[] = "Страна {$dto->countryId} не существует";
         }
 
         if ($errors !== []) {
-            return $this->errorResponse(implode(', ', $errors));
+            return AddMovieResult::error($errors);
         }
 
         $movie = $this->movieRepository->add($dto);
 
-        return $this->successResponse($movie->id);
+        return AddMovieResult::success($movie->id);
     }
 }
