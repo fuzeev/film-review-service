@@ -79,11 +79,86 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
 
     public function getList(GetMovieListQuery $dto): GetMovieListResult
     {
+        $query = $this->getEntityManager()->createQueryBuilder();
+        $query->select('m')
+            ->from(DoctrineMovie::class, 'm');
+
+        if ($dto->title) {
+            $query->andWhere('movie.title LIKE :title')
+                ->setParameter('title', '%' . $dto->title . '%');
+        }
+
+        if ($dto->titleOriginal) {
+            $query->andWhere('m.titleOriginal LIKE :titleOriginal')
+                ->setParameter('titleOriginal', '%' . $dto->titleOriginal . '%');
+        }
+
+        if ($dto->yearStart) {
+            $query->andWhere('m.year >= :yearStart')
+                ->setParameter('yearStart', $dto->yearStart);
+        }
+
+        if ($dto->yearEnd) {
+            $query->andWhere('m.year <= :yearEnd')
+                ->setParameter('yearEnd', $dto->yearEnd);
+        }
+
+        if ($dto->actorId) {
+            $query->join('m.actors', 'a')
+                ->andWhere('a.id = :actorId')
+                ->setParameter('actorId', $dto->actorId);
+        }
+
+        if ($dto->genreId) {
+            $query->join('m.genres', 'g')
+                ->andWhere('g.id = :genreId')
+                ->setParameter('genreId', $dto->genreId);
+        }
+
+        if ($dto->ratingMin) {
+            $query->andWhere('m.rating >= :ratingMin')
+                ->setParameter('ratingMin', $dto->ratingMin);
+        }
+
+        if ($dto->directorId) {
+            $query->andWhere('m.director_id = :directorId')
+                ->setParameter('directorId', $dto->directorId);
+        }
+
+        if ($dto->countryId) {
+            $query->andWhere('m.country_id = :countryId')
+                ->setParameter('countryId', $dto->countryId);
+        }
+
+        // Подсчет общего количества записей (без пагинации)
+        $totalCountQuery = (clone $query)
+            ->select('COUNT(m.id)')
+            ->getQuery();
+
+        // Сортировка
+        if ($dto->sortBy) {
+            $sortType = $dto->sortType->value;
+            $query->orderBy('m.' . $dto->sortBy->value, $sortType);
+        }
+
+        // Пагинация
+        if ($dto->limit) {
+            $query->setMaxResults($dto->limit);
+        }
+
+        if ($dto->offset) {
+            $query->setFirstResult($dto->offset);
+        }
+
+        // Получаем фильмы
+        $movies = $query->getQuery()->getResult();
+        $movies = array_map(fn ($movie) => $this->converter->doctrineToDomain($movie), $movies);
+
         return new GetMovieListResult(
-            movies: [],
+            movies: $movies,
             limit: $dto->limit,
             offset: $dto->offset,
-            totalCount: 0,
+            totalCount: $totalCountQuery->getSingleScalarResult(),
             sortBy: $dto->sortBy,
             sortType: $dto->sortType,
         );
