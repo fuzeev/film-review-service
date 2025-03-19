@@ -84,7 +84,7 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
             ->from(DoctrineMovie::class, 'm');
 
         if ($dto->title) {
-            $query->andWhere('movie.title LIKE :title')
+            $query->andWhere('m.title LIKE :title')
                 ->setParameter('title', '%' . $dto->title . '%');
         }
 
@@ -121,12 +121,12 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
         }
 
         if ($dto->directorId) {
-            $query->andWhere('m.director_id = :directorId')
+            $query->andWhere('IDENTITY(m.director) = :directorId')
                 ->setParameter('directorId', $dto->directorId);
         }
 
         if ($dto->countryId) {
-            $query->andWhere('m.country_id = :countryId')
+            $query->andWhere('IDENTITY(m.country) = :countryId')
                 ->setParameter('countryId', $dto->countryId);
         }
 

@@ -148,7 +148,10 @@ class MovieController extends AbstractController
             'titleOriginal' => $movie->titleOriginal,
             'genres' => $genres,
             'year' => $movie->year,
-            'director' => $movie->director->getShortName(),
+            'director' => [
+                'id' => $movie->director->id,
+                'name' => $movie->director->getShortName(),
+            ],
             'source' => $movie->source->value,
             'coutry' => $movie->country,
             'actors' => $actors,
