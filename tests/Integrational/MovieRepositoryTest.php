@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace App\Tests\Integrational;
 
 use App\Domain\Dto\AddMovieDto;
+use App\Domain\Dto\GetMovieListQuery;
 use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie as DomainMovie;
 use App\Domain\Enum\MovieSource;
+use App\Domain\Enum\MovieListSortField;
+use App\Domain\Enum\MovieListSortType;
 use App\Domain\Exception\PersistenceException;
 use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
+use App\Infrastructure\Storage\Entity\Country as DoctrineCountry;
+use App\Infrastructure\Storage\Entity\Director as DoctrineDirector;
 use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
 use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
 use App\Infrastructure\Storage\Repository\MovieRepository;
@@ -21,7 +26,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class MovieRepositoryTest extends KernelTestCase
 {
     private EntityManagerInterface $entityManager;
-
     private MovieRepository $movieRepository;
 
     protected function setUp(): void
@@ -99,7 +103,6 @@ class MovieRepositoryTest extends KernelTestCase
     public function testFindByIdNonExisting(): void
     {
         $result = $this->movieRepository->getById($this->getNonExistingId(DoctrineMovie::class));
-
         $this->assertNull($result);
     }
 
@@ -107,14 +110,13 @@ class MovieRepositoryTest extends KernelTestCase
     {
         foreach ([-1, 0] as $id) {
             $result = $this->movieRepository->getById($id);
-
             $this->assertNull($result);
         }
     }
 
     public function testAddMovie()
     {
-        //берем какой то имеющийся в системе фильм чтобы с него скопировать id зависимостей
+        // Берем существующий фильм, чтобы скопировать id зависимостей
         $movie = $this->getTestMovie();
         if ($movie === null) {
             throw new Exception('Фикстуры не загружены');
@@ -334,5 +336,294 @@ class MovieRepositoryTest extends KernelTestCase
 
         $this->expectException(PersistenceException::class);
         $this->movieRepository->add($dto);
+    }
+
+    /**
+     * Тест получения списка фильмов без фильтров (с сортировкой и пагинацией)
+     */
+    public function testGetMovieListWithoutFilters(): void
+    {
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: null,
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: null,
+            countryId: null,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertIsInt($result->totalCount);
+        $this->assertNotEmpty($result->movies);
+        $this->assertLessThanOrEqual(10, count($result->movies));
+    }
+
+    /**
+     * Тест фильтрации по части названия фильма
+     */
+    public function testGetMovieListByTitle(): void
+    {
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: 'Лицо',
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: null,
+            countryId: null,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $this->assertStringContainsString('Лицо', $movie->title);
+        }
+    }
+
+    /**
+     * Тест фильтрации по оригинальному названию фильма
+     */
+    public function testGetMovieListByTitleOriginal(): void
+    {
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: null,
+            titleOriginal: 'Scarface',
+            yearStart: null,
+            yearEnd: null,
+            countryId: null,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $this->assertStringContainsString('Scarface', $movie->titleOriginal);
+        }
+    }
+
+    /**
+     * Тест фильтрации по минимальному году (yearStart)
+     */
+    public function testGetMovieListByYearStart(): void
+    {
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: null,
+            titleOriginal: null,
+            yearStart: 1990,
+            yearEnd: null,
+            countryId: null,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $this->assertGreaterThanOrEqual(1990, $movie->year);
+        }
+    }
+
+    /**
+     * Тест фильтрации по максимальному году (yearEnd)
+     */
+    public function testGetMovieListByYearEnd(): void
+    {
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: null,
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: 1985,
+            countryId: null,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $this->assertLessThanOrEqual(1985, $movie->year);
+        }
+    }
+
+    /**
+     * Тест фильтрации по id актёра
+     */
+    public function testGetMovieListByActor(): void
+    {
+        $actor = $this->entityManager->getRepository(DoctrineActor::class)->findOneBy(['last_name' => 'Пачино']);
+        $this->assertNotNull($actor, 'Actor not found');
+        $actorId = $actor->getId();
+
+        $dto = new GetMovieListQuery(
+            actorId: $actorId,
+            directorId: null,
+            title: null,
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: null,
+            countryId: null,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $actorIds = array_map(fn($a) => $a->id, $movie->actors);
+            $this->assertContains($actorId, $actorIds);
+        }
+    }
+
+    /**
+     * Тест фильтрации по id жанра
+     */
+    public function testGetMovieListByGenre(): void
+    {
+        $genre = $this->entityManager->getRepository(DoctrineGenre::class)->findOneBy(['name' => 'Криминал']);
+        $this->assertNotNull($genre, 'Genre not found');
+        $genreId = $genre->getId();
+
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: null,
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: null,
+            countryId: null,
+            genreId: $genreId,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $genreIds = array_map(fn($g) => $g->id, $movie->genres);
+            $this->assertContains($genreId, $genreIds);
+        }
+    }
+
+    /**
+     * Тест фильтрации по минимальному рейтингу
+     */
+    public function testGetMovieListByRatingMin(): void
+    {
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: null,
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: null,
+            countryId: null,
+            genreId: null,
+            ratingMin: 9.0,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $this->assertGreaterThanOrEqual(9.0, $movie->rating);
+        }
+    }
+
+    /**
+     * Тест фильтрации по id режиссёра
+     */
+    public function testGetMovieListByDirector(): void
+    {
+        $movie = $this->getTestMovie();
+        $this->assertNotNull($movie, 'Test movie not found');
+        $director = $movie->getDirector();
+        $this->assertNotNull($director, 'Director not found in test movie');
+        $directorId = $director->getId();
+
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: $directorId,
+            title: null,
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: null,
+            countryId: null,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $this->assertEquals($directorId, $movie->director->id);
+        }
+    }
+
+    /**
+     * Тест фильтрации по id страны
+     */
+    public function testGetMovieListByCountry(): void
+    {
+        $country = $this->entityManager->getRepository(DoctrineCountry::class)->findOneBy(['name' => 'США']);
+        $this->assertNotNull($country, 'Country not found');
+        $countryId = $country->getId();
+
+        $dto = new GetMovieListQuery(
+            actorId: null,
+            directorId: null,
+            title: null,
+            titleOriginal: null,
+            yearStart: null,
+            yearEnd: null,
+            countryId: $countryId,
+            genreId: null,
+            ratingMin: null,
+            sortBy: MovieListSortField::YEAR,
+            sortType: MovieListSortType::ASC,
+            limit: 10,
+            offset: 0
+        );
+        $result = $this->movieRepository->getList($dto);
+        $this->assertNotEmpty($result->movies);
+        foreach ($result->movies as $movie) {
+            $this->assertEquals($countryId, $movie->country->id);
+        }
     }
 }

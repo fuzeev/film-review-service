@@ -89,7 +89,7 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
         }
 
         if ($dto->titleOriginal) {
-            $query->andWhere('m.titleOriginal LIKE :titleOriginal')
+            $query->andWhere('m.title_original LIKE :titleOriginal')
                 ->setParameter('titleOriginal', '%' . $dto->titleOriginal . '%');
         }
 
