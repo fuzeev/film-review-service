@@ -15,7 +15,7 @@ class Actor
         public string $firstName,
         public string $lastName,
         public ?string $middleName,
-        public DateTimeImmutable $birthDate,
+        public DateTimeImmutable $birthday,
     ) {
     }
 }
