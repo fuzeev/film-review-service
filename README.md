@@ -1,13 +1,13 @@
 
 
-Интерфейсы репозиториев определены в слое приложения в соответствии с Clean Architecture, но существует и другой популярный подход, 
-когда интерфейсы репозиториев определяются в домене и используются в доменных сервисах. Здесь доменные сервисы 
-лишь создают/изменяют состояние доменных сущностей
-
-Контроллеры выполняют функцию презентаторов, usecase возвращают в них результат, 
-хотя по clean architecture ответственность за презентацию должна лежать на usecase, который обращался бы к методам
-интерфейса презентатора. Здесь это не реализовано для упрощения логики
-
 для создания тестовой базы:
 symfony console --env=test doctrine:database:create
 symfony console --env=test doctrine:schema:create
+
+
+для jwt
+mkdir -p config/jwt
+openssl genrsa -out config/jwt/private.pem -aes256 4096
+openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
+
+JWT_PASSPHRASE
