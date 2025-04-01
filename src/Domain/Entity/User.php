@@ -16,7 +16,7 @@ class User
         public string $firstName,
         public string $lastName,
         public ?string $middleName,
-        public DateTimeImmutable $birthDate,
+        public DateTimeImmutable $birthday,
         public string $email,
         public string $username,
         public UserRole $role,
