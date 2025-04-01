@@ -1,3 +1,5 @@
 gesdinet_jwt_refresh_token:
     ttl: 2592000
     user_provider: app_user_provider
+    ttl_update: true
+    single_use: true

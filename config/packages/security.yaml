@@ -10,19 +10,20 @@ security:
                 property: username
     firewalls:
         login:
-            pattern: ^/api/login
+            pattern: ^/login
             stateless: true
             json_login:
-                check_path: /api/login
-                username_path: username
-                password_path: password
+                check_path: /login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
-            pattern: ^/api
+            pattern: ^/
             stateless: true
+            entry_point: jwt
             jwt: ~
+            refresh_jwt:
+                check_path: /token/refresh
 
     access_control:
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/(login|token/refresh), roles: PUBLIC_ACCESS }
+        - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }
