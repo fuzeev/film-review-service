@@ -2,7 +2,7 @@ ecs:
 	vendor/bin/ecs check
 
 stan:
-	vendor/bin/phpstan analyse
+	vendor/bin/phpstan analyse --memory-limit 1G
 
 ecs-fix:
 	vendor/bin/ecs check --fix

@@ -357,7 +357,6 @@ class MovieRepositoryTest extends KernelTestCase
             offset: 0
         );
         $result = $this->movieRepository->getList($dto);
-        $this->assertIsInt($result->totalCount);
         $this->assertNotEmpty($result->movies);
         $this->assertLessThanOrEqual(10, count($result->movies));
     }

@@ -76,7 +76,7 @@ class MovieController extends AbstractController
         $result = $this->addMovieUsecase->execute($dto);
 
         if (! $result->success) {
-            return $this->json($result->error, Response::HTTP_BAD_REQUEST);
+            return $this->json($result->errors, Response::HTTP_BAD_REQUEST);
         }
 
         return $this->json($result, Response::HTTP_CREATED);
