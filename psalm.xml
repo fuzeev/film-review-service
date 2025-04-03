@@ -18,6 +18,7 @@
 
     <issueHandlers>
         <PossiblyUnusedProperty errorLevel="info" />
+        <MissingOverrideAttribute errorLevel="info" />
         <UnusedClass errorLevel="info" />
         <PossiblyUnusedMethod errorLevel="info" />
         <PossiblyUnusedParam errorLevel="info" />

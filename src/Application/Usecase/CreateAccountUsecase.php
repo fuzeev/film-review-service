@@ -36,15 +36,22 @@ class CreateAccountUsecase
             $errors['email'] = "Пользователь с email $request->email уже зарегистрирован";
         }
 
+        $birthday = DateTimeImmutable::createFromFormat('Y-m-d', $request->birthday);
+
+        if (!$birthday) {
+            $errors['birthday'] = "Неверный формат даты";
+        }
+
         if ($errors) {
             return CreateAccountResult::error($errors);
         }
 
+        assert($birthday instanceof DateTimeImmutable);
         $dto = new CreateUserDto(
             firstName: $request->firstName,
             lastName: $request->lastName,
             middleName: $request->middleName,
-            birthday: DateTimeImmutable::createFromFormat('Y-m-d', $request->birthday),
+            birthday: $birthday,
             email: $request->email,
             username: $request->username,
             role: UserRole::REWIEWER,

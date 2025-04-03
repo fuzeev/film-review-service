@@ -30,7 +30,7 @@ readonly class UserConverter
         $birthday = $user->getBirthday();
         $email = $user->getEmail();
         $username = $user->getUsername();
-        $role = UserRole::tryFrom($user->getRole());
+        $role = UserRole::tryFrom($user->getRole() ?? '');
 
         if ($id === null || $firstName === null || $lastName === null || $birthday === null || $email === null
             || $username === null || $role === null) {

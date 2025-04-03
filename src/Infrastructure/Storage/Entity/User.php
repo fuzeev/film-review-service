@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Storage\Entity;
 
+use App\Domain\Enum\UserRole;
 use App\Infrastructure\Storage\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -135,7 +136,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [$this->role];
+        if ($this->role) {
+            return [$this->role];
+        }
+
+        return [];
     }
 
     public function eraseCredentials(): void
@@ -144,7 +149,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        $username = $this->getUsername();
+        if (!empty($username)) {
+            return $username;
+        }
+
+        throw new \Exception('Username cannot be empty');
     }
 
     public function getPassword(): ?string
