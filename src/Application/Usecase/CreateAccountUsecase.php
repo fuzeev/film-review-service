@@ -23,16 +23,16 @@ class CreateAccountUsecase
         $errors = [];
 
         if ($request->password !== $request->confirmPassword) {
-            $errors[] = "Пароли не совпадают";
+            $errors['confirmPassword'] = "Пароли не совпадают";
             return CreateAccountResult::error($errors);
         }
 
         if ($this->userRepository->findByUsername($request->username)) {
-            $errors[] = "Пользователь с ником $request->username уже зарегистрирован";
+            $errors['username'] = "Пользователь с ником $request->username уже зарегистрирован";
         }
 
         if ($this->userRepository->findByEmail($request->email)) {
-            $errors[] = "Пользователь с email $request->email уже зарегистрирован";
+            $errors['email'] = "Пользователь с email $request->email уже зарегистрирован";
         }
 
         if ($errors) {

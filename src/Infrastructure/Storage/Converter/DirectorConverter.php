@@ -45,6 +45,7 @@ readonly class DirectorConverter
         $entity = $this->entityManager->getReference(DoctrineDirector::class, $director->id);
         $entity->setFirstName($director->firstName);
         $entity->setLastName($director->lastName);
+        $entity->setMiddleName($director->middleName);
         $entity->setBirthday($director->birthday);
 
         return $entity;

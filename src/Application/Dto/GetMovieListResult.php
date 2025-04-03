@@ -24,6 +24,11 @@ readonly class GetMovieListResult
 
     public static function error(array $errors): self
     {
+        $errors = array_map(fn ($field, $error) => [
+            'field' => is_int($field) ? null : $field,
+            'error' => $error,
+        ], array_keys($errors), $errors);
+
         return new self(
             $errors,
         );

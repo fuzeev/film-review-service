@@ -25,5 +25,5 @@ security:
                 check_path: /token/refresh
 
     access_control:
-        - { path: ^/(login|token/refresh), roles: PUBLIC_ACCESS }
+        - { path: ^/(login|token/refresh|create-account), roles: PUBLIC_ACCESS }
         - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }

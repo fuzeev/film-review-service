@@ -41,19 +41,19 @@ class AddMovieUsecase
 
         $errors = [];
         if ($nonExistingGenres = $this->genreRepository->findNonExistentIds($dto->genreIds)) {
-            $errors[] = 'Следующие жанры не существуют: ' . implode(', ', $nonExistingGenres);
+            $errors['genreIds'] = 'Следующие жанры не существуют: ' . implode(', ', $nonExistingGenres);
         }
         if ($nonExistingActors = $this->actorRepository->findNonExistentIds($dto->actorIds)) {
-            $errors[] = 'Следующие актеры не существуют: ' . implode(
+            $errors['actorIds'] = 'Следующие актеры не существуют: ' . implode(
                 ', ',
                 $nonExistingActors
             );
         }
         if (! $this->directorRepository->checkIdExists($dto->directorId)) {
-            $errors[] = "Режиссер {$dto->directorId} не существует";
+            $errors['directorId'] = "Режиссер {$dto->directorId} не существует";
         }
         if (! $this->countryRepository->checkIdExists($dto->countryId)) {
-            $errors[] = "Страна {$dto->countryId} не существует";
+            $errors['countryId'] = "Страна {$dto->countryId} не существует";
         }
 
         if ($errors !== []) {

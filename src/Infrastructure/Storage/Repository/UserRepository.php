@@ -2,42 +2,68 @@
 
 namespace App\Infrastructure\Storage\Repository;
 
-use App\Infrastructure\Storage\Entity\User;
+use App\Domain\Dto\CreateUserDto;
+use App\Domain\Entity\User as DomainUser;
+use App\Domain\Repository\IUserRepository;
+use App\Infrastructure\Storage\Converter\UserConverter;
+use App\Infrastructure\Storage\Entity\User as DoctrineUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * @extends ServiceEntityRepository<User>
+ * @extends ServiceEntityRepository<DoctrineUser>
  */
-class UserRepository extends ServiceEntityRepository
+class UserRepository extends ServiceEntityRepository implements IUserRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    use EntityRepositoryTrait;
+    public function __construct(
+        ManagerRegistry $registry,
+        protected UserConverter $converter,
+        protected UserPasswordHasherInterface $passwordHasher,
+    )
     {
-        parent::__construct($registry, User::class);
+        parent::__construct($registry, DoctrineUser::class);
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getById(int $id): ?DomainUser
+    {
+        $model = $this->find($id);
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $this->converter->doctrineToDomain($model);
+    }
+
+    public function findByEmail(string $email): ?DomainUser
+    {
+        $model = $this->findOneBy(['email' => $email]);
+        return $this->converter->doctrineToDomain($model);
+    }
+
+    public function findByUsername(string $username): ?DomainUser
+    {
+        $model = $this->findOneBy(['username' => $username]);
+        return $this->converter->doctrineToDomain($model);
+    }
+
+
+    public function createUser(CreateUserDto $dto): DomainUser
+    {
+        $doctrineUser = new DoctrineUser();
+        $doctrineUser->setFirstName($dto->firstName)
+            ->setLastName($dto->lastName)
+            ->setMiddleName($dto->middleName)
+            ->setBirthday($dto->birthday)
+            ->setEmail($dto->email)
+            ->setUsername($dto->username)
+            ->setRole($dto->role->value);
+
+        $hashedPassword = $this->passwordHasher->hashPassword($doctrineUser, $dto->password);
+        $doctrineUser->setPassword($hashedPassword);
+
+        $em = $this->getEntityManager();
+        $em->persist($doctrineUser);
+        $em->flush();
+
+        return $this->converter->doctrineToDomain($doctrineUser);
+    }
 }

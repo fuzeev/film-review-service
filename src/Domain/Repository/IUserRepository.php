@@ -28,4 +28,6 @@ interface IUserRepository extends IEntityRepository
      * @return User|null
      */
     public function findByEmail(string $email): ?User;
+
+    public function getById(int $id): ?User;
 }
