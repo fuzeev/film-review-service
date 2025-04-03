@@ -9,13 +9,12 @@ use App\Domain\Dto\GetMovieListQuery;
 use App\Domain\Entity\Actor;
 use App\Domain\Entity\Genre;
 use App\Domain\Entity\Movie as DomainMovie;
-use App\Domain\Enum\MovieSource;
 use App\Domain\Enum\MovieListSortField;
 use App\Domain\Enum\MovieListSortType;
+use App\Domain\Enum\MovieSource;
 use App\Domain\Exception\PersistenceException;
 use App\Infrastructure\Storage\Entity\Actor as DoctrineActor;
 use App\Infrastructure\Storage\Entity\Country as DoctrineCountry;
-use App\Infrastructure\Storage\Entity\Director as DoctrineDirector;
 use App\Infrastructure\Storage\Entity\Genre as DoctrineGenre;
 use App\Infrastructure\Storage\Entity\Movie as DoctrineMovie;
 use App\Infrastructure\Storage\Repository\MovieRepository;
@@ -55,7 +54,6 @@ class MovieRepositoryTest extends KernelTestCase
      * Возвращает несуществующий id для заданной сущности (максимальный id + 1)
      *
      * @param class-string $entityClass
-     * @return int
      */
     protected function getNonExistingId(string $entityClass): int
     {
@@ -477,7 +475,9 @@ class MovieRepositoryTest extends KernelTestCase
      */
     public function testGetMovieListByActor(): void
     {
-        $actor = $this->entityManager->getRepository(DoctrineActor::class)->findOneBy(['last_name' => 'Пачино']);
+        $actor = $this->entityManager->getRepository(DoctrineActor::class)->findOneBy([
+            'last_name' => 'Пачино',
+        ]);
         $this->assertNotNull($actor, 'Actor not found');
         $actorId = $actor->getId();
 
@@ -499,7 +499,7 @@ class MovieRepositoryTest extends KernelTestCase
         $result = $this->movieRepository->getList($dto);
         $this->assertNotEmpty($result->movies);
         foreach ($result->movies as $movie) {
-            $actorIds = array_map(fn($a) => $a->id, $movie->actors);
+            $actorIds = array_map(fn ($a) => $a->id, $movie->actors);
             $this->assertContains($actorId, $actorIds);
         }
     }
@@ -509,7 +509,9 @@ class MovieRepositoryTest extends KernelTestCase
      */
     public function testGetMovieListByGenre(): void
     {
-        $genre = $this->entityManager->getRepository(DoctrineGenre::class)->findOneBy(['name' => 'Криминал']);
+        $genre = $this->entityManager->getRepository(DoctrineGenre::class)->findOneBy([
+            'name' => 'Криминал',
+        ]);
         $this->assertNotNull($genre, 'Genre not found');
         $genreId = $genre->getId();
 
@@ -531,7 +533,7 @@ class MovieRepositoryTest extends KernelTestCase
         $result = $this->movieRepository->getList($dto);
         $this->assertNotEmpty($result->movies);
         foreach ($result->movies as $movie) {
-            $genreIds = array_map(fn($g) => $g->id, $movie->genres);
+            $genreIds = array_map(fn ($g) => $g->id, $movie->genres);
             $this->assertContains($genreId, $genreIds);
         }
     }
@@ -601,7 +603,9 @@ class MovieRepositoryTest extends KernelTestCase
      */
     public function testGetMovieListByCountry(): void
     {
-        $country = $this->entityManager->getRepository(DoctrineCountry::class)->findOneBy(['name' => 'США']);
+        $country = $this->entityManager->getRepository(DoctrineCountry::class)->findOneBy([
+            'name' => 'США',
+        ]);
         $this->assertNotNull($country, 'Country not found');
         $countryId = $country->getId();
 

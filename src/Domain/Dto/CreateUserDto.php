@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Dto;
 
-use App\Domain\Entity\PersonTrait;
 use App\Domain\Enum\UserRole;
 use DateTimeImmutable;
 

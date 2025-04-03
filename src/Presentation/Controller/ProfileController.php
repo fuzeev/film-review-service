@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Presentation\Controller;
 
 use App\Application\Dto\CreateAccountRequest;
 use App\Application\Usecase\CreateAccountUsecase;
-use App\Domain\Entity\Movie;
 use JsonException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

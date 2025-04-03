@@ -79,7 +79,8 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
 
     public function getList(GetMovieListQuery $dto): GetMovieListResult
     {
-        $query = $this->getEntityManager()->createQueryBuilder();
+        $query = $this->getEntityManager()
+            ->createQueryBuilder();
         $query->select('m')
             ->from(DoctrineMovie::class, 'm');
 
@@ -151,7 +152,8 @@ class MovieRepository extends ServiceEntityRepository implements IMovieRepositor
         }
 
         // Получаем фильмы
-        $movies = $query->getQuery()->getResult();
+        $movies = $query->getQuery()
+            ->getResult();
         $movies = array_map(fn ($movie) => $this->converter->doctrineToDomain($movie), $movies);
 
         return new GetMovieListResult(

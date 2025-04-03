@@ -24,7 +24,7 @@ readonly class AddMovieResult
             'field' => is_int($field) ? null : $field,
             'error' => $error,
         ], array_keys($errors), $errors);
-        
+
         return new self(false, null, $errors);
     }
 }

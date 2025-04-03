@@ -23,7 +23,8 @@ class CreateAccountUsecase
         $errors = [];
 
         if ($request->password !== $request->confirmPassword) {
-            $errors['confirmPassword'] = "Пароли не совпадают";
+            $errors['confirmPassword'] = 'Пароли не совпадают';
+
             return CreateAccountResult::error($errors);
         }
 

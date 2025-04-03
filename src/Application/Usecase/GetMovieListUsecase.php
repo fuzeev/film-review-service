@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\Usecase;
 
 use App\Application\Dto\GetMovieListRequest;
@@ -27,23 +29,23 @@ class GetMovieListUsecase
     public function execute(GetMovieListRequest $dto): GetMovieListResult
     {
         $errors = [];
-        if ($dto->actorId && !$this->actorRepository->checkIdExists($dto->actorId)) {
+        if ($dto->actorId && ! $this->actorRepository->checkIdExists($dto->actorId)) {
             $errors[] = "Актер с id $dto->actorId не найден";
         }
 
-        if ($dto->directorId && !$this->directorRepository->checkIdExists($dto->directorId)) {
+        if ($dto->directorId && ! $this->directorRepository->checkIdExists($dto->directorId)) {
             $errors[] = "Режиссер с id $dto->actorId не найден";
         }
 
-        if ($dto->countryId && !$this->countryRepository->checkIdExists($dto->countryId)) {
+        if ($dto->countryId && ! $this->countryRepository->checkIdExists($dto->countryId)) {
             $errors[] = "Страна с id $dto->actorId не найдена";
         }
 
-        if ($dto->genreId && !$this->genreRepository->checkIdExists($dto->genreId)) {
+        if ($dto->genreId && ! $this->genreRepository->checkIdExists($dto->genreId)) {
             $errors[] = "Жанр с id $dto->actorId не найден";
         }
 
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             return GetMovieListResult::error($errors);
         }
 
@@ -74,5 +76,4 @@ class GetMovieListUsecase
             sortType: $repositoryResult->sortType,
         );
     }
-
 }

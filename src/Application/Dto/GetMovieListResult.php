@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\Dto;
 
 use App\Domain\Entity\Movie;
@@ -41,8 +43,7 @@ readonly class GetMovieListResult
         int $totalCount,
         MovieListSortField $sortBy,
         MovieListSortType $sortType,
-    ): self
-    {
+    ): self {
         return new self(
             movies: $movies,
             limit: $limit,

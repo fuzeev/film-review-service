@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Tests\Application\Dto;
+declare(strict_types=1);
+
+namespace App\Tests\Unit;
 
 use App\Application\Dto\AddMovieRequest;
 use PHPUnit\Framework\TestCase;

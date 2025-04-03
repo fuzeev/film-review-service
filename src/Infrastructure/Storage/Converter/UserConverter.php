@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Infrastructure\Storage\Converter;
 
 use App\Domain\Entity\User as DomainUser;
 use App\Domain\Enum\UserRole;
 use App\Infrastructure\Storage\Entity\User as DoctrineUser;
 use App\Infrastructure\Storage\Exception\FailedToConvertException;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class UserConverter
@@ -32,7 +33,7 @@ readonly class UserConverter
         $role = UserRole::tryFrom($user->getRole());
 
         if ($id === null || $firstName === null || $lastName === null || $birthday === null || $email === null
-            || $username === null || $role === null ) {
+            || $username === null || $role === null) {
             throw new FailedToConvertException(DomainUser::class, DoctrineUser::class);
         }
 

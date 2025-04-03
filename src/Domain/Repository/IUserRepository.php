@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Repository;
 
 use App\Domain\Dto\CreateUserDto;
@@ -15,17 +17,11 @@ interface IUserRepository extends IEntityRepository
 
     /**
      * Находит пользователя по username
-     *
-     * @param string $username
-     * @return User|null
      */
     public function findByUsername(string $username): ?User;
 
     /**
      * Находит пользователя по email
-     *
-     * @param string $username
-     * @return User|null
      */
     public function findByEmail(string $email): ?User;
 

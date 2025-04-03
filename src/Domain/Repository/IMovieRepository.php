@@ -24,9 +24,6 @@ interface IMovieRepository extends IEntityRepository
 
     /**
      * Возвращает список фильмов в соответствии с фильтрами, примененными в объекте запроса
-     *
-     * @param GetMovieListQuery $dto
-     * @return GetMovieListResult
      */
     public function getList(GetMovieListQuery $dto): GetMovieListResult;
 }

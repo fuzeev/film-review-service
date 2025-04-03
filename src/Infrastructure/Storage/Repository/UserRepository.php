@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Infrastructure\Storage\Repository;
 
 use App\Domain\Dto\CreateUserDto;
@@ -21,8 +23,7 @@ class UserRepository extends ServiceEntityRepository implements IUserRepository
         ManagerRegistry $registry,
         protected UserConverter $converter,
         protected UserPasswordHasherInterface $passwordHasher,
-    )
-    {
+    ) {
         parent::__construct($registry, DoctrineUser::class);
     }
 
@@ -35,13 +36,19 @@ class UserRepository extends ServiceEntityRepository implements IUserRepository
 
     public function findByEmail(string $email): ?DomainUser
     {
-        $model = $this->findOneBy(['email' => $email]);
+        $model = $this->findOneBy([
+            'email' => $email,
+        ]);
+
         return $this->converter->doctrineToDomain($model);
     }
 
     public function findByUsername(string $username): ?DomainUser
     {
-        $model = $this->findOneBy(['username' => $username]);
+        $model = $this->findOneBy([
+            'username' => $username,
+        ]);
+
         return $this->converter->doctrineToDomain($model);
     }
 
