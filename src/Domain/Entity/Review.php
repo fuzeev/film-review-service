@@ -11,6 +11,7 @@ class Review
     public function __construct(
         public int $id,
         public User $author,
+        public Movie $movie,
         public string $title,
         public string $text,
         public int $rating,
