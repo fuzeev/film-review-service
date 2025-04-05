@@ -1,26 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Presentation\Controller;
 
-use App\Application\Dto\CreateAccountRequest;
-use App\Application\Usecase\CreateAccountUsecase;
+use App\Application\Dto\CreateReviewRequest;
+use App\Application\Usecase\CreateReviewUsecase;
 use JsonException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class ProfileController extends AbstractController
+class ReviewController extends AbstractController
 {
     public function __construct(
-        protected CreateAccountUsecase $createAccountUsecase,
+        protected CreateReviewUsecase $createReviewUsecase,
         protected ValidatorInterface $validator,
     ) {
     }
 
-    #[Route('/create-account', name: 'create_account', methods: ['POST'])]
+    #[Route('/create-review', name: 'create_review', methods: ['POST'])]
     public function getMovieListHandler(Request $request): Response
     {
         try {
@@ -29,15 +27,12 @@ class ProfileController extends AbstractController
             return $this->json('Invalid Json', 400);
         }
 
-        $dto = new CreateAccountRequest(
-            firstName: $requestDecoded['firstName'] ?? null,
-            lastName: $requestDecoded['lastName'] ?? null,
-            middleName: $requestDecoded['middleName'] ?? null,
-            birthday: $requestDecoded['birthday'] ?? null,
-            email: $requestDecoded['email'] ?? null,
-            username: $requestDecoded['username'] ?? null,
-            password: $requestDecoded['password'] ?? null,
-            confirmPassword: $requestDecoded['confirmPassword'] ?? null,
+        $dto = new CreateReviewRequest(
+            title: $requestDecoded['title'] ?? null,
+            text: $requestDecoded['text'] ?? null,
+            rating: $requestDecoded['rating'] ?? null,
+            authorId: $this->getUser()->getId(),
+            movieId: $requestDecoded['movieId'] ?? null,
         );
 
         $errors = $this->validator->validate($dto);
@@ -45,7 +40,7 @@ class ProfileController extends AbstractController
             return $this->validationErrorResponse($errors);
         }
 
-        $result = $this->createAccountUsecase->execute($dto);
+        $result = $this->createReviewUsecase->execute($dto);
 
         if (! $result->success) {
             return $this->json($result->toArray(), Response::HTTP_BAD_REQUEST);

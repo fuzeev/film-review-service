@@ -27,4 +27,13 @@ readonly class CreateReviewResult
 
         return new self(false, null, $errors);
     }
+
+    public function toArray(): array
+    {
+        return [
+            'success'   => $this->success,
+            'reviewId'  => $this->reviewId,
+            'errors'    => $this->errors,
+        ];
+    }
 }

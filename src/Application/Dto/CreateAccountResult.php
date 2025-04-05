@@ -27,4 +27,13 @@ readonly class CreateAccountResult
 
         return new self(false, null, $errors);
     }
+
+    public function toArray(): array
+    {
+        return [
+            'success'   => $this->success,
+            'userId'  => $this->userId,
+            'errors'    => $this->errors,
+        ];
+    }
 }

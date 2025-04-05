@@ -5,6 +5,7 @@ namespace App\Infrastructure\Storage\Repository;
 use App\Domain\Dto\CreateReviewDto;
 use App\Domain\Repository\IReviewRepository;
 use App\Infrastructure\Storage\Converter\MovieConverter;
+use App\Infrastructure\Storage\Converter\ReviewConverter;
 use App\Infrastructure\Storage\Converter\UserConverter;
 use App\Infrastructure\Storage\Entity\Review as DoctrineReview;
 use App\Domain\Entity\Review as DomainReview;
@@ -21,8 +22,8 @@ class ReviewRepository extends ServiceEntityRepository implements IReviewReposit
     public function __construct(
         ManagerRegistry $registry,
         readonly private MovieConverter $movieConverter,
-        readonly private UserConverter $userConverter
-
+        readonly private UserConverter $userConverter,
+        readonly private ReviewConverter $reviewConverter,
     ) {
         parent::__construct($registry, DoctrineReview::class);
     }
@@ -31,9 +32,9 @@ class ReviewRepository extends ServiceEntityRepository implements IReviewReposit
     {
         $result = $this->createQueryBuilder('r')
             ->select('1')
-            ->andWhere('r.author_id = :authorId')
-            ->setParameter('authorId', $userId)
-            ->andWhere('r.movie_id = :movieId')
+            ->andWhere('IDENTITY(r.author) = :userId')
+            ->setParameter('userId', $userId)
+            ->andWhere('IDENTITY(r.movie) = :movieId')
             ->setParameter('movieId', $movieId)
             ->setMaxResults(1)
             ->getQuery()
@@ -53,12 +54,12 @@ class ReviewRepository extends ServiceEntityRepository implements IReviewReposit
         $newReview->setMovie($movie);
 
         $author = $this->userConverter->domainToDoctrine($dto->author);
-        $newReview->setMovie($author);
+        $newReview->setAuthor($author);
 
         $em = $this->getEntityManager();
         $em->persist($newReview);
         $em->flush();
 
-        return $this->converter->doctrineToDomain($newReview);
+        return $this->reviewConverter->doctrineToDomain($newReview);
     }
 }

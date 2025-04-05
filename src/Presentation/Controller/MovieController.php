@@ -76,10 +76,10 @@ class MovieController extends AbstractController
         $result = $this->addMovieUsecase->execute($dto);
 
         if (! $result->success) {
-            return $this->json($result->errors, Response::HTTP_BAD_REQUEST);
+            return $this->json($result->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->json($result, Response::HTTP_CREATED);
+        return $this->json($result->toArray(), Response::HTTP_CREATED);
     }
 
     #[Route('/movies', name: 'get_movie_list', methods: ['POST'])]

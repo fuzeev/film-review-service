@@ -27,4 +27,13 @@ readonly class AddMovieResult
 
         return new self(false, null, $errors);
     }
+
+    public function toArray(): array
+    {
+        return [
+            'success'   => $this->success,
+            'movieId'  => $this->movieId,
+            'errors'    => $this->errors,
+        ];
+    }
 }

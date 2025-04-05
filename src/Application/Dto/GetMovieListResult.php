@@ -53,4 +53,16 @@ readonly class GetMovieListResult
             sortType: $sortType,
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'movies' => $this->movies,
+            'limit' => $this->limit,
+            'offset' => $this->offset,
+            'totalCount' => $this->totalCount,
+            'sortBy' => $this->sortBy,
+            'sortType' => $this->sortType,
+        ];
+    }
 }

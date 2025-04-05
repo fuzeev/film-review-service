@@ -15,7 +15,7 @@ class Review
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $author_id = null;
+    private ?User $author = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
@@ -37,12 +37,12 @@ class Review
 
     public function getAuthor(): ?User
     {
-        return $this->author_id;
+        return $this->author;
     }
 
     public function setAuthor(?User $author): static
     {
-        $this->author_id = $author;
+        $this->author = $author;
 
         return $this;
     }
