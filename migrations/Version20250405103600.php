@@ -24,6 +24,7 @@ final class Version20250405103600 extends AbstractMigration
             CREATE TABLE review (
                 id SERIAL NOT NULL,
                 author_id INT NOT NULL,
+                movie_id INT NOT NULL,
                 title VARCHAR(255) NOT NULL,
                 text VARCHAR(1024) NOT NULL,
                 rating INT NOT NULL,
@@ -36,6 +37,13 @@ final class Version20250405103600 extends AbstractMigration
             ALTER TABLE review
             ADD CONSTRAINT FK_review_author
             FOREIGN KEY (author_id) REFERENCES "user"(id)
+            NOT DEFERRABLE INITIALLY IMMEDIATE
+        ');
+
+        $this->addSql('
+            ALTER TABLE review
+            ADD CONSTRAINT FK_review_movie
+            FOREIGN KEY (movie_id) REFERENCES "movie"(id)
             NOT DEFERRABLE INITIALLY IMMEDIATE
         ');
     }

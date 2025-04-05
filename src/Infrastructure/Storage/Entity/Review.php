@@ -35,14 +35,14 @@ class Review
         return $this->id;
     }
 
-    public function getAuthorId(): ?User
+    public function getAuthor(): ?User
     {
         return $this->author_id;
     }
 
-    public function setAuthorId(?User $author_id): static
+    public function setAuthor(?User $author): static
     {
-        $this->author_id = $author_id;
+        $this->author_id = $author;
 
         return $this;
     }
