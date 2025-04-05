@@ -30,3 +30,6 @@ down:
 	docker compose down --remove-orphans
 
 restart: down up
+
+migration:
+	symfony console doctrine:migration:generate
